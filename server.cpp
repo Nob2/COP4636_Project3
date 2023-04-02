@@ -60,6 +60,7 @@ void Server::beginListening()
 }
 
 void Server::exportUsers() {
+    printf("Exporting \n");
     std::ofstream output;
     output.open(this->userFile);
 
@@ -99,10 +100,10 @@ void Server::importUsers() {
         std::string password;
         std::vector<std::string> locations;
 
-        printf("%s %s\n", userName, password);
-
         lineProcess >> userName;
         lineProcess >> password;
+
+        printf("%s %s\n", userName, password);
 
         std::string location;
         User user(userName, password);
