@@ -19,7 +19,7 @@ class User {
         std::string password;
         std::vector<std::string> subscribedLocations;
         std::vector<std::string> receivedMessages;
-        bool isOnline;
+        bool Online;
     public:
 
         User(std::string userName, std::string password);
@@ -40,8 +40,8 @@ class User {
         std::vector<std::string> getReceivedMessages() {return this->receivedMessages;}
         void addReceiveMessage(std::string message) {this->receivedMessages.push_back(message);}
 
-        void updateStatus(bool onlineStatus) {this->isOnline = onlineStatus};
-        bool isOnline() {return this->isOnline;}
+        void updateStatus(bool onlineStatus) {this->Online = onlineStatus;}
+        bool isOnline() {return this->Online;}
 
 };
 

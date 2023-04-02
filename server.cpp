@@ -99,6 +99,8 @@ void Server::importUsers() {
         std::string password;
         std::vector<std::string> locations;
 
+        printf("%s %s\n", userName, password);
+
         lineProcess >> userName;
         lineProcess >> password;
 
@@ -106,8 +108,10 @@ void Server::importUsers() {
         User user(userName, password);
         user.updateStatus(false);
 
-        while(lineProcess >> location)
+        while(lineProcess >> location){
             user.addLocation(location);
+            printf("%s\n", location);
+        }
         
         this->registeredUsers.push_back(user);
     }
@@ -119,10 +123,11 @@ void Server::importUsers() {
 
 void Server::initalizeServer()
 {
-    initalizeListenSocket();
-    defineSocketAddress();
+    //initalizeListenSocket();
+    //defineSocketAddress();
     importUsers();
-    beginListening();
+    //beginListening();
+    exportUsers();
 }
 
 void Server::handleIndividualRequest(int socket)
