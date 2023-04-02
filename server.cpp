@@ -99,14 +99,14 @@ void Server::importUsers() {
         std::string password;
         std::vector<std::string> locations;
 
-        userName << lineProcess;
-        password << lineProcess;
+        lineProcess >> userName;
+        lineProcess >> password;
 
         std::string location;
         User user(userName, password);
         user.updateStatus(false);
 
-        while(location << lineProcess)
+        while(lineProcess >> location)
             user.addLocation(location);
         
         this->registeredUsers.push_back(user);
