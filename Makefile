@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -g -std=c++14 -pthread -Wall
 
-main: server.o ServerManager.cpp
+main: user.o server.o ServerManager.cpp
 	$(CXX) $(CXXFLAGS) $^ -o main
 
 client: client.o ClientManager.cpp
