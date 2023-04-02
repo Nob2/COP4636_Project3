@@ -3,6 +3,7 @@
 #include <arpa/inet.h>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 /**
  * Author: Nicholas Brown-Duncan
@@ -60,7 +61,6 @@ void Server::beginListening()
 }
 
 void Server::exportUsers() {
-    printf("Exporting \n");
     std::ofstream output;
     output.open(this->userFile);
 
@@ -71,6 +71,8 @@ void Server::exportUsers() {
 
     for(size_t i=0; i < this->registeredUsers.size(); i++) {
         output << this->registeredUsers.at(i).getUsername() << ' ' << this->registeredUsers.at(i).getPassword() << ' ';
+
+        std::cout << this->registeredUsers.at(i).getSubscribedLocations().size() << std::endl;
 
         for(size_t i=0; i < this->registeredUsers.at(i).getSubscribedLocations().size(); i++) {
             if(i != 0)
@@ -103,7 +105,7 @@ void Server::importUsers() {
         lineProcess >> userName;
         lineProcess >> password;
 
-        printf("%s %s\n", userName, password);
+        std::cout << userName << " " << password << std::endl;
 
         std::string location;
         User user(userName, password);
@@ -111,7 +113,7 @@ void Server::importUsers() {
 
         while(lineProcess >> location){
             user.addLocation(location);
-            printf("%s\n", location);
+            std::cout << location << std::endl;
         }
         
         this->registeredUsers.push_back(user);
