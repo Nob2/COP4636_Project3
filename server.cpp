@@ -74,10 +74,10 @@ void Server::exportUsers() {
 
         std::cout << this->registeredUsers.at(i).getSubscribedLocations().size() << std::endl;
 
-        for(size_t i=0; i < this->registeredUsers.at(i).getSubscribedLocations().size(); i++) {
-            if(i != 0)
+        for(size_t j=0; i < this->registeredUsers.at(i).getSubscribedLocations().size(); i++) {
+            if(j != 0)
                 output << ' ';
-            output << this->registeredUsers.at(i).getSubscribedLocations().at(i);
+            output << this->registeredUsers.at(i).getSubscribedLocations().at(j);
         } 
         output << std::endl;
     }
@@ -105,15 +105,12 @@ void Server::importUsers() {
         lineProcess >> userName;
         lineProcess >> password;
 
-        std::cout << userName << " " << password << std::endl;
-
         std::string location;
         User user(userName, password);
         user.updateStatus(false);
 
         while(lineProcess >> location){
             user.addLocation(location);
-            std::cout << location << std::endl;
         }
         
         this->registeredUsers.push_back(user);
