@@ -74,7 +74,7 @@ void Server::exportUsers() {
 
         std::cout << this->registeredUsers.at(i).getSubscribedLocations().size() << std::endl;
 
-        for(size_t j=0; i < this->registeredUsers.at(i).getSubscribedLocations().size(); i++) {
+        for(size_t j=0; j < this->registeredUsers.at(i).getSubscribedLocations().size(); j++) {
             if(j != 0)
                 output << ' ';
             output << this->registeredUsers.at(i).getSubscribedLocations().at(j);
