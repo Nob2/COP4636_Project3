@@ -61,7 +61,7 @@ std::string Client::receiveMessage() {
     socketRead = read(this->clientSocket, buffer, 1024);
     if (socketRead == -1)
     {
-        printf("Error communicating to socket %i, closing connection", socket);
+        printf("Error communicating to socket, closing connection");
         close(this->clientSocket);
         return "";
     }
@@ -90,8 +90,7 @@ void Client::registerUser() {
     std::string finalMessage = user + " " + pass;
     this->sendMessage(finalMessage);
 
-    // Give server time to respond
-    std::usleep(2000);
+    usleep(1000);
 
     acknowledgement = this->receiveMessage();
 
@@ -123,7 +122,8 @@ void Client::loginUser() {
     std::string finalMessage = user + " " + pass;
     this->sendMessage(finalMessage);
 
-    std::usleep(2000);
+    //Give the server, enough time to respond
+    usleep(1000);
 
     acknowledgement = this->receiveMessage();
 
