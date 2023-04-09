@@ -282,6 +282,7 @@ void Client::messageServer() {
                     break;
                 case 3:
                     this->updatePassword();
+                    break;
                 case 4:
                     this->removeLocation();
                     break;
