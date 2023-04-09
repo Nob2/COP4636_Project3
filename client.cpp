@@ -56,22 +56,19 @@ void Client::messageServer() {
         std::cin >> choice;
 
         switch(choice) {
-            1: {
-
-            }
-            2: {
-
-            }
-            3: {
-
-            }
-            4: {
-
-            }5: {
-
-            }
+            1:
+                break;
+            2: 
+                break;
+            3: 
+                break;
+            4: 
+                break;
+            5: 
+                break;
             default:
                 std::cout << "Invalid choice, try again\n";
+                break;
 
         }
     }
