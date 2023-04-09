@@ -199,7 +199,7 @@ void Server::loginUser(int socket) {
         if(this->registeredUsers.at(k).getUsername() == userName && this->registeredUsers.at(k).getPassword() == password) {
             this->registeredUsers.at(k).setConnectionSocket(socket);
             this->registeredUsers.at(k).updateStatus(true);
-            this->sendMessage("Success");
+            this->sendMessage(socket, "Success");
             return;
         }
     }
