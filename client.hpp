@@ -34,6 +34,7 @@ class Client {
 
         void registerUser();
         void loginUser();
+        void logout();
     public:
         void connectToHost(std::string nameOfHost);
         void closeConnection();

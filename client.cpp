@@ -142,43 +142,80 @@ void Client::loginUser() {
     std::cout << "There was an error communicating with the server, most likely a time out issue. Please try again\n";
 }
 
+void Client::logout() {
+    this->sendMessage("logout");
+
+    std::string acknowledgement = this->receiveMessage();
+
+    if(acknowledgement != "Ok"){
+        std::cout << "Error from server in acknowleding request\n" << std::endl;
+        std::cout << "Received: " + acknowledgement << std::endl;
+        return;
+    }
+
+    this->sendMessage(this->userName);
+    acknowledgement = this->receiveMessage();
+
+    if(acknowledgement == "Success") {
+        std::cout << "Successfully logged out\n";
+        this->isLogined = false;
+        this->userName = "";
+        this->password = "";
+    } else {
+        std::cout << "Error logging out\n";
+    }
+}
+
 void Client::messageServer() {
     while(true) {
         printHeader();
         int choice;
         std::cin >> choice;
 
-        switch(choice) {
-            case 1:
-                this->registerUser();
-                break;
-            case 2: 
-                this->loginUser();
-                break;
-            case 3: 
-                break;
-            case 4: 
-                break;
-            case 5: 
-                break;
-            case 6:
-                this->sendMessage("Exit");
-                return;
-            default:
-                std::cout << "Invalid choice, try again\n";
-                break;
-
+        if(!this->isLogined){
+            switch(choice) {
+                case 1:
+                    this->registerUser();
+                    break;
+                case 2: 
+                    this->loginUser();
+                    break;
+                case 3: 
+                    this->sendMessage("Exit");
+                    return;
+                default:
+                    std::cout << "Invalid choice, try again\n";
+                    break;
+            }
+        } else {
+            switch(choice) {
+                case 1:
+                    this->logout();
+                case 2:
+                    break;
+                case 3:
+                    this->sendMessage("Exit");
+                    return;
+                default:
+                    std::cout << "Invalid choice, try again\n\n";
+                    break;
+            } 
         }
     }
 }
 
 void Client::printHeader() {
-    std::cout << "What would you like to do?\n";
-    std::cout << "1 - Register User \n";
-    std::cout << "2 - Login User\n";
-    std::cout << "3 - Log out\n";
-    std::cout << "4 - Subscribe to new location\n";
-    std::cout << "5 - Change password\n";
-    std::cout << "6 - Exit Program\n";
-    std::cout << std::endl;
+    if(!this->isLogined){
+        std::cout << "What would you like to do?\n";
+        std::cout << "1 - Register User \n";
+        std::cout << "2 - Login User\n";
+        std::cout << "3 - Exit Program\n";
+        std::cout << std::endl;
+    } else {
+        std::cout << "1 - Log out\n";
+        std::cout << "2 - Subscribe to new location\n";
+        std::cout << "3 - Change password\n";
+        std::cout << "4 - Exit Program\n";
+        std::cout << std::endl;
+    }
 }

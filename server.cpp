@@ -215,11 +215,15 @@ void Server::logoutUser(int socket) {
 
     for(size_t i =0; i < this->registeredUsers.size(); i++) {
         if(this->registeredUsers.at(i).getUsername() == userName) {
+            this->sendMessage(socket, "Success");
+
             this->registeredUsers.at(i).updateStatus(false);
             this->registeredUsers.at(i).setConnectionSocket(-1);
             return;
         }
     }
+
+    this->sendMessage(socket, "Fail");
 }
 
 void Server::handleIndividualRequest(int socket)
@@ -260,9 +264,9 @@ void Server::handleRequests()
 void Server::closeServer()
 {
     exportUsers();
-    /** for (size_t i = 0; i < this->clientThreads.size(); i++)
+    for (size_t i = 0; i < this->clientThreads.size(); i++)
     {
         this->clientThreads.at(i).join();
-    } **/
+    }
     shutdown(listeningSocket, SHUT_RDWR);
 }
