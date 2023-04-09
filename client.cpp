@@ -8,7 +8,7 @@
 #include "client.hpp"
 #include <string.h>
 #include <iostream>
-#include <stdlib.h>
+#include <unistd.h>
 
 struct hostent* Client::retrieveHostName(std::string nameOfHost) {
     this->nameOfHost = nameOfHost;
@@ -91,7 +91,7 @@ void Client::registerUser() {
     this->sendMessage(finalMessage);
 
     // Give server time to respond
-    std::sleep(2000);
+    std::usleep(2000);
 
     acknowledgement = this->receiveMessage();
 
@@ -123,7 +123,7 @@ void Client::loginUser() {
     std::string finalMessage = user + " " + pass;
     this->sendMessage(finalMessage);
 
-    std::sleep(2000);
+    std::usleep(2000);
 
     acknowledgement = this->receiveMessage();
 
