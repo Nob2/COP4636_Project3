@@ -244,17 +244,22 @@ void Server::updateSubscription(int socket) {
     for(size_t t =0; t < this->registeredUsers.size(); t++)
         if(this->registeredUsers.at(t).getUsername() == user)
             userIndex = t;
+
     if(userIndex == -1) {
         this->sendMessage(socket, "Fail");
         std::cout << "Failed to subscribe to location, user does not exist.\n";
         return;
     }
 
+    std::string location = "";
     while(i < message.length()) {
-        std::string location = "";
-        while(message[i] != ' ')
+        if(message[i] == ' ' || i == message.length()) {
+            std::cout << "Location: " << location << std::endl;
+            this->registeredUsers.at(userIndex).addLocation(location);
+            location = "";
+        }
+        else
             location += message[i++];
-        this->registeredUsers.at(userIndex).addLocation(location);
     }
 
     std::cout << "Successfully subscribed to location(s)\n";
