@@ -159,7 +159,7 @@ void Server::registerUser(int socket) {
     int i =0; 
     while(message[i] != ' ')
         userName += message[i++];
-    
+    i++;
     while(i < message.length())
         password += message[i++];
     
@@ -193,7 +193,7 @@ void Server::loginUser(int socket) {
     int i =0; 
     while(message[i] != ' ')
         userName += message[i++];
-    
+    i++; //Skip over the space
     while(i < message.length())
         password += message[i++];
 
