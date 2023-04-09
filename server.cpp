@@ -316,7 +316,7 @@ void Server::changeUserPassword(int socket) {
 }
 
 void Server::listUserSubscription(int socket) {
-    this->sendMessage("Ok");
+    this->sendMessage(socket, "Ok");
     std::string userName = this->receiveMessage(socket);
 
     std::string finalMessage = "";
