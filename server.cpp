@@ -300,7 +300,6 @@ void Server::handleIndividualRequest(int socket)
             this->updateSubscription(socket);
         else if(requestOperation == "unsubscribe")
             this->removeSubscription(socket);
-            continue;
         else if(requestOperation == "Exit")
             return;
         else
