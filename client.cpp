@@ -166,6 +166,42 @@ void Client::logout() {
     }
 }
 
+void Client::subscribeLocation() {
+    this->sendMessage("subscribe");
+
+    std::string acknowledgement = this->receiveMessage();
+
+    if(acknowledgement != "Ok"){
+        std::cout << "Error from server in acknowleding request\n" << std::endl;
+        std::cout << "Received: " + acknowledgement << std::endl;
+        return;
+    }
+
+    std::string finalMessage = this->userName;
+    std::cout << "How many locations would you like to subscribe to?\n";
+    int numSubscriptions;
+    std::cin >> numSubscriptions;
+
+    for(int i =0; i < numSubscriptions; i++) {
+        std::cout << "Enter location: ";
+        std::string location;
+        std::cin >> location;
+
+        finalMessage += " " + location;
+    }
+
+    this->sendMessage(finalMessage);
+
+    acknowledgement = this->receiveMessage();
+
+    if(acknowledgement == "Success") {
+        std::cout << "Successfully subscribed to locations\n";
+    } else {
+        std::cout << "Error occured during subscribing\n";
+    }
+}
+}
+
 void Client::messageServer() {
     while(true) {
         printHeader();
@@ -193,8 +229,12 @@ void Client::messageServer() {
                 case 1:
                     this->logout();
                 case 2:
-                    break;
+                    this->subscribeLocation();
                 case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
                     this->sendMessage("Exit");
                     return;
                 default:
@@ -209,6 +249,7 @@ void Client::printHeader() {
     std::cout << std::endl << std::endl;
     if(!this->isLogined){
         std::cout << "What would you like to do?\n";
+        std::cout << "Please Note some features may require you to login\n";
         std::cout << "1 - Register User \n";
         std::cout << "2 - Login User\n";
         std::cout << "3 - Exit Program\n";
@@ -217,7 +258,8 @@ void Client::printHeader() {
         std::cout << "1 - Log out\n";
         std::cout << "2 - Subscribe to new location\n";
         std::cout << "3 - Change password\n";
-        std::cout << "4 - Exit Program\n";
+        std::cout << "4 - Unsubscribe from location\n";
+        std::cout << "5 - Exit Program\n";
         std::cout << std::endl;
     }
 }

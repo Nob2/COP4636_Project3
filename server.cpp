@@ -227,6 +227,39 @@ void Server::logoutUser(int socket) {
     this->sendMessage(socket, "Fail");
 }
 
+void Server::updateSubscription(int socket) {
+    this->sendMessage(socket, "Ok");
+    std::string message = this->receiveMessage(socket);
+
+    std::string user;
+
+    long unsigned int i =0; 
+    while(message[i] != ' ')
+        userName += message[i++];
+    i++; //Skip over the space
+
+    int userIndex = -1;
+    for(size_t t =0; t < this->registeredUsers.size(); t++)
+        if(this->registeredUsers.at(t).getUsername() == user)
+            userIndex = t;
+    if(userIndex == -1) {
+        this->sendMessage(socket, "Fail");
+        std::cout << "Failed to subscribe to location, user does not exist.\n";
+        return;
+    }
+
+    while(i < message.length) {
+        std::string location = "";
+        while(message[i] != ' ')
+            location += message[i];
+        this->registeredUsers.at(userIndex).addLocation(location);
+    }
+
+    std::cout << "Successfully subscribed to location(s)\n";
+    this->sendMessage(socket, "Success");
+    
+}
+
 void Server::handleIndividualRequest(int socket)
 {
     while(true){
@@ -239,6 +272,12 @@ void Server::handleIndividualRequest(int socket)
             this->registerUser(socket);
         else if(requestOperation == "logout")
             this->logoutUser(socket);
+        else if(requestOperation == "password")
+            this->changeUserPassword(socket);
+        else if(requestOperation == "subscribe")
+            this->updateSubscription(socket);
+        else if(requestOperation == "unsubscribe")
+            this->removeSubscription(socket);
         else if(requestOperation == "Exit")
             return;
         else

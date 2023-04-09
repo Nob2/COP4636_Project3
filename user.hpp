@@ -34,7 +34,7 @@ class User {
         void setPassword(std::string password) {this->password = password;}
 
         std::vector<std::string> getSubscribedLocations() {return this->subscribedLocations;}
-        void addLocation(std::string location) {this->subscribedLocations.push_back(location);}
+        void addLocation(std::string location);
         void unsubscribeFromLocation(std::string location);
 
         std::vector<std::string> getReceivedMessages() {return this->receivedMessages;}

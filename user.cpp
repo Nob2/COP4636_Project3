@@ -12,6 +12,15 @@ User::User(std::string userName, std::string password) {
     this->password = password;
 }
 
+void User::addLocation(std::string location) {
+    for(size_t i =0; i < this->subscribedLocations.size(); i++) {
+        if(this->subscribedLocations.at(i) == location)
+            return;
+    }
+
+    this->subscribedLocations.push_back(location);
+}
+
 void User::unsubscribeFromLocation(std::string location) {
     for(size_t i =0; i < this->subscribedLocations.size(); i++) {
         if(this->subscribedLocations.at(i) == location){

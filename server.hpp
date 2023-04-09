@@ -46,8 +46,9 @@ class Server {
         void loginUser(int connectionSocket);
         void logoutUser(int connectionSocket);
         void registerUser(int connectionSocket);
-        void changeUserPassword(std::string userName, std::string newPassword);
-        void updateSubscription(std::string userName, std::string location);
+        void changeUserPassword(int socket);
+        void updateSubscription(int socket);
+        void removeSubscription(int socket);
         void getUserSubscription(std::string userName);
     public:
         void initalizeServer();
