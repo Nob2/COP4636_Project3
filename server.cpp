@@ -235,7 +235,7 @@ void Server::updateSubscription(int socket) {
 
     long unsigned int i =0; 
     while(message[i] != ' ')
-        userName += message[i++];
+        user += message[i++];
     i++; //Skip over the space
 
     int userIndex = -1;
@@ -248,7 +248,7 @@ void Server::updateSubscription(int socket) {
         return;
     }
 
-    while(i < message.length) {
+    while(i < message.length()) {
         std::string location = "";
         while(message[i] != ' ')
             location += message[i];
