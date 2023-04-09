@@ -38,6 +38,7 @@ class Client {
         void subscribeLocation();
         void removeLocation();
         void updatePassword();
+        void listSubscriptions();
 
         bool acknowledgeRequest();
         bool acknowledgeResult();

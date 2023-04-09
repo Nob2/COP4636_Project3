@@ -251,6 +251,19 @@ void Client::updatePassword() {
     }
 }
 
+void Client::listSubscriptions() {
+    this->sendMessage("list");
+
+    if(!acknowledgeRequest())
+        return;
+    
+    this->sendMessage(this->userName);
+
+    std::string serverResponse = this->receiveMessage();
+
+    std::cout << "You are subscribed to the following locations: " << serverResponse << std::endl;
+}
+
 void Client::messageServer() {
     while(true) {
         printHeader();
@@ -288,6 +301,9 @@ void Client::messageServer() {
                     this->removeLocation();
                     break;
                 case 5:
+                    this->listSubscriptions();
+                    break;
+                case 6:
                     this->sendMessage("Exit");
                     return;
                 default:
@@ -312,7 +328,8 @@ void Client::printHeader() {
         std::cout << "2 - Subscribe to new location\n";
         std::cout << "3 - Change password\n";
         std::cout << "4 - Unsubscribe from location\n";
-        std::cout << "5 - Exit Program\n";
+        std::cout << "5 - List subscriptions\n";
+        std::cout << "6 - Exit Program\n";
         std::cout << std::endl;
     }
 }

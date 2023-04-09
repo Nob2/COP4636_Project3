@@ -315,6 +315,31 @@ void Server::changeUserPassword(int socket) {
     this->sendMessage(socket, "Fail");
 }
 
+void Server::listUserSubscription(int socket) {
+    this->sendMessage("Ok");
+    std::string userName = this->receiveMessage(socket);
+
+    std::string finalMessage = "";
+    std::vector<std::string> subscribedLocations;
+
+    for(size_t i =0; i < this->registeredUsers.size(); i++) {
+        if(this->registeredUsers.at(i).getUsername() == userName)
+            subscribedLocations = this->registeredUsers.at(i).getSubscribedLocations();
+    }
+    if(subscribedLocations.size() == 0)
+        finalMessage = "None";
+    else{
+        for(size_t i =0; i < subscribedLocations.size(); i++) {
+            if(i == subscribedLocations.size() - 1)
+                finalMessage += subscribedLocations.at(i);
+            else
+                finalMessage += subscribedLocations.at(i) + ",";
+        }
+    }
+
+    this->sendMessage(socket, finalMessage);
+}
+
 void Server::handleIndividualRequest(int socket)
 {
     while(true){
@@ -333,6 +358,8 @@ void Server::handleIndividualRequest(int socket)
             this->updateSubscription(socket);
         else if(requestOperation == "unsubscribe")
             this->removeSubscription(socket);
+        else if(requestOperation == "list")
+            this->listUserSubscription(socket);
         else if(requestOperation == "Exit")
             return;
         else
