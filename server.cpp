@@ -133,10 +133,10 @@ void Server::initalizeServer()
 }
 
 std::string Server::receiveMessage(int socket) {
-    char buffer[1024] = {0};
+    char buffer[4028] = {0};
     int socketRead;
 
-    socketRead = read(socket, buffer, 1024);
+    socketRead = read(socket, buffer, 4028);
     if (socketRead == -1)
     {
         printf("Error communicating to socket %i, closing connection", socket);
@@ -232,6 +232,8 @@ void Server::updateSubscription(int socket) {
     std::string message = this->receiveMessage(socket);
 
     std::string user;
+
+    std::cout << "Received string: " << message << std::endl;
 
     long unsigned int i =0; 
     while(message[i] != ' ')

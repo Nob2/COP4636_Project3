@@ -190,6 +190,8 @@ void Client::subscribeLocation() {
         finalMessage += " " + location;
     }
 
+    std::cout << "Sent string: " << finalMessage << std::endl;
+
     this->sendMessage(finalMessage);
 
     acknowledgement = this->receiveMessage();
