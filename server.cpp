@@ -211,6 +211,7 @@ void Server::handleIndividualRequest(int socket)
 {
     while(true){
         std::string requestOperation = receiveMessage(socket);
+        printf("%s\n\n\n", requestOperation);
 
         if(requestOperation == "login")
             this->loginUser(socket);

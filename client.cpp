@@ -76,6 +76,17 @@ void Client::registerUser() {
         std::cout << "Error from server in acknowleding request\n" << std::endl;
         std::cout << "Received: " + acknowledgement << std::endl;
     }
+
+    std::string user;
+    std::string pass;
+    std::cout << "What is your username?\n";
+    std::cin >> user;
+
+    std::cout << "What is your password?\n";
+    std::cin >> pass;
+
+    std::string finalMessage = user + " " + pass;
+    this->sendMessage(finalMessage);
 }
 
 void Client::messageServer() {
