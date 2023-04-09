@@ -3,6 +3,7 @@
 #include <arpa/inet.h>
 #include <fstream>
 #include <sstream>
+#include <iostream>
 
 /**
  * Author: Nicholas Brown-Duncan
@@ -211,7 +212,7 @@ void Server::handleIndividualRequest(int socket)
 {
     while(true){
         std::string requestOperation = receiveMessage(socket);
-        printf("%s\n\n\n", requestOperation);
+        std::cout << "Request: " << requestOperation << std::endl;
 
         if(requestOperation == "login")
             this->loginUser(socket);
