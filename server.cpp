@@ -187,6 +187,8 @@ void Server::loginUser(int socket) {
     std::string message = receiveMessage(socket);
     std::string userName = "";
     std::string password = "";
+
+    std::cout << "Login string: " << message << std::endl;
     
     int i =0; 
     while(message[i] != ' ')
@@ -194,11 +196,14 @@ void Server::loginUser(int socket) {
     
     while(i < message.length())
         password += message[i++];
+
+    std::cout << "Received user: " << userName << std::endl;
+    std::cout << "Received pass: " << password << std::endl;
     
     for(size_t k =0; k < this->registeredUsers.size(); k++) {
         if(this->registeredUsers.at(k).getUsername() == userName && this->registeredUsers.at(k).getPassword() == password) {
             std::cout << "Successful login attempt\n";
-            
+
             this->registeredUsers.at(k).setConnectionSocket(socket);
             this->registeredUsers.at(k).updateStatus(true);
             this->sendMessage(socket, "Success");
