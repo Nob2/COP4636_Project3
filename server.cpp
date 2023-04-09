@@ -251,7 +251,7 @@ void Server::updateSubscription(int socket) {
     while(i < message.length()) {
         std::string location = "";
         while(message[i] != ' ')
-            location += message[i];
+            location += message[i++];
         this->registeredUsers.at(userIndex).addLocation(location);
     }
 
