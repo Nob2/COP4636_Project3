@@ -204,6 +204,8 @@ void Server::loginUser(int socket) {
             return;
         }
     }
+
+    this->sendMessage("Fail");
 }
 
 void Server::logoutUser(int socket) {

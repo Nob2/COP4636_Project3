@@ -107,6 +107,7 @@ void Client::loginUser() {
     if(acknowledgement != "Ok"){
         std::cout << "Error from server in acknowleding request\n" << std::endl;
         std::cout << "Received: " + acknowledgement << std::endl;
+        return;
     }
 
     std::string user;
@@ -127,9 +128,15 @@ void Client::loginUser() {
         this->userName = user;
         this->password = pass;
         this->isLogined = true;
-    } else {
-        std::cout << "Error logging in\n";
+        
+        return;
+    } else if (acknowledgement == "Fail") {
+        std::cout << "Error logging in for specified user/password combination\n";
+
+        return;
     }
+
+    std::cout << "There was an error communicating with the server, most likely a time out issue. Please try again\n";
 }
 
 void Client::messageServer() {
