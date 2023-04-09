@@ -164,7 +164,7 @@ void Server::registerUser(int socket) {
     //Verify user doesn't already exist
     for(size_t k =0; k < this->registeredUsers.size(); k++) {
         if(this->registeredUsers.at(k).getUsername() == userName) {
-            this->sendMessage("Fail");
+            this->sendMessage(socket, "Fail");
             printf("User already exists, cannot register\n");
             return;
         }
@@ -206,7 +206,7 @@ void Server::loginUser(int socket) {
         }
     }
 
-    this->sendMessage("Fail");
+    this->sendMessage(socket, "Fail");
 }
 
 void Server::logoutUser(int socket) {
@@ -234,9 +234,10 @@ void Server::handleIndividualRequest(int socket)
             this->registerUser(socket);
         else if(requestOperation == "logout")
             this->logoutUser(socket);
+        else if(requestOperation == "Exit")
+            return;
         else
             printf("Invalid request received\n");
-        return;
     }
 }
 

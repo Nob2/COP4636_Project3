@@ -162,8 +162,8 @@ void Client::messageServer() {
             case 5: 
                 break;
             case 6:
+                this->sendMessage("Exit");
                 return;
-                break;
             default:
                 std::cout << "Invalid choice, try again\n";
                 break;
