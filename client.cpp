@@ -50,7 +50,7 @@ void Client::closeConnection() {
 }
 
 void Client::sendMessage( std::string message) {
-    send(this->clientSocket, message.c_str(), 1048, 0);
+    send(this->clientSocket, message.c_str(), strlen(message.c_str()), 0);
 }
 
 std::string Client::receiveMessage() {
