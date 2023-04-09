@@ -119,7 +119,7 @@ void Server::importUsers() {
 }
 
 void Server::sendMessage(int socket, std::string message) {
-    send(socket, message.c_str(), 1048, 0);
+    send(socket, message.c_str, 1048, 0);
 }
 
 void Server::initalizeServer()
@@ -143,7 +143,7 @@ std::string Server::receiveMessage(int socket) {
         return "";
     }
 
-    return buffer.c_str();
+    return buffer.c_str;
 }
 
 void Server::registerUser(int socket) {
@@ -152,7 +152,7 @@ void Server::registerUser(int socket) {
     std::string password = "";
     
     int i =0; 
-    while(message[i] != " ")
+    while(message[i] != ' ')
         userName += message[i++];
     
     while(i < message.length())
