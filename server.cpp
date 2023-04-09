@@ -143,7 +143,7 @@ std::string Server::receiveMessage(int socket) {
         return "";
     }
 
-    return buffer.c_str;
+    return std::string(buffer);
 }
 
 void Server::registerUser(int socket) {
