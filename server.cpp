@@ -115,7 +115,6 @@ void Server::importUsers() {
     }
 
     printf("User import completed\n");
-    printf("%i\n", this->registeredUsers.size());
     input.close();
 }
 
@@ -362,8 +361,10 @@ void Server::handleIndividualRequest(int socket)
             this->listUserSubscription(socket);
         else if(requestOperation == "Exit")
             return;
-        else
+        else {
             printf("Invalid request received\n");
+            this->sendMessage(socket, "Invalid");
+        }
     }
 }
 
