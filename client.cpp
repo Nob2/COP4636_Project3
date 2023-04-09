@@ -87,6 +87,45 @@ void Client::registerUser() {
 
     std::string finalMessage = user + " " + pass;
     this->sendMessage(finalMessage);
+
+    acknowledgement = this->receiveMessage();
+
+    if(acknowledgement == "Success") {
+        std::cout << "Successfully registered your user, you are now logined\n";
+        this->userName = user;
+        this->password = pass;
+        this->isLogined = true;
+    }
+}
+
+void Client::loginUser() {
+    this->sendMessage("login");
+    std::string acknowledgement = this->receiveMessage();
+
+    if(acknowledgement != "Ok"){
+        std::cout << "Error from server in acknowleding request\n" << std::endl;
+        std::cout << "Received: " + acknowledgement << std::endl;
+    }
+
+    std::string user;
+    std::string pass;
+    std::cout << "What is your username?\n";
+    std::cin >> user;
+
+    std::cout << "What is your password?\n";
+    std::cin >> pass;
+
+    std::string finalMessage = user + " " + pass;
+    this->sendMessage(finalMessage);
+
+    acknowledgement = this->receiveMessage();
+
+    if(acknowledgement == "Success") {
+        std::cout << "Successfully logined.\n";
+        this->userName = user;
+        this->password = pass;
+        this->isLogined = true;
+    }
 }
 
 void Client::messageServer() {
@@ -100,6 +139,7 @@ void Client::messageServer() {
                 this->registerUser();
                 break;
             case 2: 
+                this->loginUser();
                 break;
             case 3: 
                 break;

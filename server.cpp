@@ -148,10 +148,13 @@ std::string Server::receiveMessage(int socket) {
 }
 
 void Server::registerUser(int socket) {
+    //We got your request, send it along
     this->sendMessage(socket, "Ok");
     std::string message = receiveMessage(socket);
     std::string userName = "";
     std::string password = "";
+
+    std::cout << "User Register string: " << message << std::endl;
     
     int i =0; 
     while(message[i] != ' ')
@@ -168,15 +171,19 @@ void Server::registerUser(int socket) {
         }
     }
 
+    std::cout << "Registration complete!\n\n";
+
     //User doesn't exist
     User user(userName, password);
     user.setConnectionSocket(socket);
     user.updateStatus(true);
 
     this->registeredUsers.push_back(user);
+    this->sendMessage(socket, "Success");
 }
 
 void Server::loginUser(int socket) {
+    this->sendMessage(socket, "Ok");
     std::string message = receiveMessage(socket);
     std::string userName = "";
     std::string password = "";
@@ -192,11 +199,14 @@ void Server::loginUser(int socket) {
         if(this->registeredUsers.at(k).getUsername() == userName && this->registeredUsers.at(k).getPassword() == password) {
             this->registeredUsers.at(k).setConnectionSocket(socket);
             this->registeredUsers.at(k).updateStatus(true);
+            this->sendMessage("Success");
+            return;
         }
     }
 }
 
 void Server::logoutUser(int socket) {
+    this->sendMessage(socket, "Ok");
     std::string userName = receiveMessage(socket);
 
     for(size_t i =0; i < this->registeredUsers.size(); i++) {

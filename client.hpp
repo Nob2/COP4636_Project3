@@ -23,14 +23,17 @@ class Client {
         struct sockaddr_in server_address;
         std::string fileContents;
         struct hostent* retrieveHostName(std::string hostName);
+
         void printHeader();
         void sendMessage(std::string message);
         std::string receiveMessage();
 
         std::string userName;
         std::string password;
+        bool isLogined = false;
 
         void registerUser();
+        void loginUser();
     public:
         void connectToHost(std::string nameOfHost);
         void closeConnection();
