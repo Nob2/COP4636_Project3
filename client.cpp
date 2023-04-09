@@ -200,7 +200,6 @@ void Client::subscribeLocation() {
         std::cout << "Error occured during subscribing\n";
     }
 }
-}
 
 void Client::messageServer() {
     while(true) {
