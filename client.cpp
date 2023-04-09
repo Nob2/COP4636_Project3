@@ -87,7 +87,7 @@ bool Client::acknowledgeResult() {
     if(acknowledgement == "Success") {
         return true;
     }
-    else if(acknowledgement == "Fail") {
+    else {
         return false;
     }
 }
