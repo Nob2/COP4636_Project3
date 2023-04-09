@@ -178,19 +178,11 @@ void Client::subscribeLocation() {
     }
 
     std::string finalMessage = this->userName;
-    std::cout << "How many locations would you like to subscribe to?\n";
-    int numSubscriptions;
-    std::cin >> numSubscriptions;
+    std::cout << "Enter location: ";
+    std::string location;
+    std::cin >> location;
 
-    for(int i =0; i < numSubscriptions; i++) {
-        std::cout << "Enter location: ";
-        std::string location;
-        std::cin >> location;
-
-        finalMessage += " " + location;
-    }
-
-    std::cout << "Sent string: " << finalMessage << std::endl;
+    finalMessage += " " + location;
 
     this->sendMessage(finalMessage);
 

@@ -252,15 +252,10 @@ void Server::updateSubscription(int socket) {
     }
 
     std::string location = "";
-    while(i < message.length()) {
-        if(message[i] == ' ' || i == message.length()) {
-            std::cout << "Location: " << location << std::endl;
-            this->registeredUsers.at(userIndex).addLocation(location);
-            location = "";
-        }
-        else
-            location += message[i++];
-    }
+    while(i < message.length())
+        location += message[i++];
+    
+    this->registeredUsers.at(userIndex).addLocation(location);
 
     std::cout << "Successfully subscribed to location(s)\n";
     this->sendMessage(socket, "Success");
