@@ -180,14 +180,14 @@ void Server::loginUser(int socket) {
     std::string password = "";
     
     int i =0; 
-    while(message[i] != " ")
+    while(message[i] != ' ')
         userName += message[i++];
     
     while(i < message.length())
         password += message[i++];
     
     for(size_t k =0; k < this->registeredUsers.size(); k++) {
-        if(this->registeredUsers.at(k).getUsername == userName && this->registeredUsers.at(k).getPassword() == password) {
+        if(this->registeredUsers.at(k).getUsername() == userName && this->registeredUsers.at(k).getPassword() == password) {
             this->registeredUsers.at(k).setConnectionSocket(socket);
             this->registeredUsers.at(k).updateStatus(true);
         }
