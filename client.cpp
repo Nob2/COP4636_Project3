@@ -8,6 +8,7 @@
 #include "client.hpp"
 #include <string.h>
 #include <iostream>
+#include <stdlib.h>
 
 struct hostent* Client::retrieveHostName(std::string nameOfHost) {
     this->nameOfHost = nameOfHost;
@@ -60,7 +61,7 @@ std::string Client::receiveMessage() {
     socketRead = read(this->clientSocket, buffer, 1024);
     if (socketRead == -1)
     {
-        printf("Error communicating to socket %d, closing connection", socket);
+        printf("Error communicating to socket %i, closing connection", socket);
         close(this->clientSocket);
         return "";
     }
@@ -75,6 +76,7 @@ void Client::registerUser() {
     if(acknowledgement != "Ok"){
         std::cout << "Error from server in acknowleding request\n" << std::endl;
         std::cout << "Received: " + acknowledgement << std::endl;
+        return;
     }
 
     std::string user;
@@ -87,6 +89,9 @@ void Client::registerUser() {
 
     std::string finalMessage = user + " " + pass;
     this->sendMessage(finalMessage);
+
+    // Give server time to respond
+    std::sleep(2000);
 
     acknowledgement = this->receiveMessage();
 
@@ -117,6 +122,8 @@ void Client::loginUser() {
 
     std::string finalMessage = user + " " + pass;
     this->sendMessage(finalMessage);
+
+    std::sleep(2000);
 
     acknowledgement = this->receiveMessage();
 

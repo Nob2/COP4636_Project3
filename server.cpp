@@ -115,7 +115,7 @@ void Server::importUsers() {
     }
 
     printf("User import completed\n");
-    printf("%d\n", this->registeredUsers.size());
+    printf("%i\n", this->registeredUsers.size());
     input.close();
 }
 
