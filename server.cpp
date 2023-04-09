@@ -119,7 +119,7 @@ void Server::importUsers() {
 }
 
 void Server::sendMessage(int socket, std::string message) {
-    send(socket, message.c_str, 1048, 0);
+    send(socket, message.c_str(), 1048, 0);
 }
 
 void Server::initalizeServer()
