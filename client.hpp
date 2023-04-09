@@ -36,6 +36,10 @@ class Client {
         void loginUser();
         void logout();
         void subscribeLocation();
+        void removeLocation();
+
+        bool acknowledgeRequest();
+        bool acknowledgeResult();
     public:
         void connectToHost(std::string nameOfHost);
         void closeConnection();

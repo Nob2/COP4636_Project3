@@ -230,35 +230,27 @@ void Server::logoutUser(int socket) {
 void Server::updateSubscription(int socket) {
     this->sendMessage(socket, "Ok");
     std::string message = this->receiveMessage(socket);
-
     std::string user;
 
-    std::cout << "Received string: " << message << std::endl;
 
     long unsigned int i =0; 
     while(message[i] != ' ')
         user += message[i++];
     i++; //Skip over the space
 
-    int userIndex = -1;
-    for(size_t t =0; t < this->registeredUsers.size(); t++)
-        if(this->registeredUsers.at(t).getUsername() == user)
-            userIndex = t;
-
-    if(userIndex == -1) {
-        this->sendMessage(socket, "Fail");
-        std::cout << "Failed to subscribe to location, user does not exist.\n";
-        return;
-    }
-
     std::string location = "";
     while(i < message.length())
         location += message[i++];
     
-    this->registeredUsers.at(userIndex).addLocation(location);
+    for(size_t t =0; t < this->registeredUsers.size(); t++)
+        if(this->registeredUsers.at(t).getUsername() == user) {
+            this->registeredUsers.at(t).addLocation(location);
+            this->sendMessage(socket, "Success");
+            std::cout << "Successfully subscribed to location\n";
+        }
 
-    std::cout << "Successfully subscribed to location(s)\n";
-    this->sendMessage(socket, "Success");
+    this->sendMessage(socket, "Fail");
+    std::cout << "Failed to subscribe to location\n";
     
 }
 

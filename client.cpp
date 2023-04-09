@@ -69,15 +69,34 @@ std::string Client::receiveMessage() {
     return std::string(buffer);
 }
 
-void Client::registerUser() {
-    this->sendMessage("register");
+bool Client::acknowledgeRequest() {
     std::string acknowledgement = this->receiveMessage();
 
     if(acknowledgement != "Ok"){
         std::cout << "Error from server in acknowleding request\n" << std::endl;
         std::cout << "Received: " + acknowledgement << std::endl;
-        return;
+        return false;
     }
+
+    return true;
+}
+
+bool Client::acknowledgeResult() {
+    std::string acknowledgement = this->receiveMessage();
+
+    if(acknowledgement == "Success") {
+        return true;
+    }
+    else if(acknowledgement == "Fail") {
+        return false;
+    }
+}
+
+void Client::registerUser() {
+    this->sendMessage("register");
+
+    if(!acknowledgeRequest())
+        return;
 
     std::string user;
     std::string pass;
@@ -90,28 +109,24 @@ void Client::registerUser() {
     std::string finalMessage = user + " " + pass;
     this->sendMessage(finalMessage);
 
-    acknowledgement = this->receiveMessage();
+    bool operationSucceeded = this->acknowledgeResult();
 
-    if(acknowledgement == "Success") {
+    if(operationSucceeded) {
         std::cout << "Successfully registered your user, you are now logined\n";
         this->userName = user;
         this->password = pass;
         this->isLogined = true;
     }
-    else if(acknowledgement == "Fail") {
+    else {
         std::cout << "Failed to register user. User most likely already exists.\n\n";
     }
 }
 
 void Client::loginUser() {
     this->sendMessage("login");
-    std::string acknowledgement = this->receiveMessage();
 
-    if(acknowledgement != "Ok"){
-        std::cout << "Error from server in acknowleding request\n" << std::endl;
-        std::cout << "Received: " + acknowledgement << std::endl;
+    if(!acknowledgeRequest())
         return;
-    }
 
     std::string user;
     std::string pass;
@@ -124,16 +139,16 @@ void Client::loginUser() {
     std::string finalMessage = user + " " + pass;
     this->sendMessage(finalMessage);
 
-    acknowledgement = this->receiveMessage();
+    bool operationSucceeded = this->acknowledgeResult();
 
-    if(acknowledgement == "Success") {
+    if(operationSucceeded) {
         std::cout << "Successfully logged in.\n";
         this->userName = user;
         this->password = pass;
         this->isLogined = true;
         
         return;
-    } else if (acknowledgement == "Fail") {
+    } else {
         std::cout << "Error logging in for specified user/password combination\n";
 
         return;
@@ -145,18 +160,13 @@ void Client::loginUser() {
 void Client::logout() {
     this->sendMessage("logout");
 
-    std::string acknowledgement = this->receiveMessage();
-
-    if(acknowledgement != "Ok"){
-        std::cout << "Error from server in acknowleding request\n" << std::endl;
-        std::cout << "Received: " + acknowledgement << std::endl;
+    if(!acknowledgeRequest())
         return;
-    }
 
     this->sendMessage(this->userName);
-    acknowledgement = this->receiveMessage();
+    bool operationSucceeded = this->acknowledgeResult();
 
-    if(acknowledgement == "Success") {
+    if(operationSucceeded) {
         std::cout << "Successfully logged out\n";
         this->isLogined = false;
         this->userName = "";
@@ -168,14 +178,8 @@ void Client::logout() {
 
 void Client::subscribeLocation() {
     this->sendMessage("subscribe");
-
-    std::string acknowledgement = this->receiveMessage();
-
-    if(acknowledgement != "Ok"){
-        std::cout << "Error from server in acknowleding request\n" << std::endl;
-        std::cout << "Received: " + acknowledgement << std::endl;
+    if(!acknowledgeRequest())
         return;
-    }
 
     std::string finalMessage = this->userName;
     std::cout << "Enter location: ";
@@ -186,12 +190,39 @@ void Client::subscribeLocation() {
 
     this->sendMessage(finalMessage);
 
-    acknowledgement = this->receiveMessage();
+    bool operationSucceeded = this->acknowledgeResult();
 
-    if(acknowledgement == "Success") {
-        std::cout << "Successfully subscribed to locations\n";
+    if(operationSucceeded) {
+        std::cout << "Successfully subscribed to location\n";
     } else {
         std::cout << "Error occured during subscribing\n";
+    }
+}
+
+void Client::removeLocation() {
+    std::cout << "Please note, operation can be successfully even if you are not subscribed to the given location\n\n";
+    this->sendMessage("unsubscribe");
+
+    std::string acknowledgement;
+
+    if(!acknowledgeRequest())
+        return;
+    
+    std::string location;
+    std::cout << "Enter location: ";
+    std::cin >> location;
+
+    std::string finalMessage = this->userName;
+    finalMessage += " " + location;
+
+    this->sendMessage(finalMessage);
+
+    bool operationSucceeded = this->acknowledgeResult();
+
+    if(operationSucceeded) {
+        std::cout << "Successfully unsubscribed from location\n";
+    } else {
+        std::cout << "Failed to unsubscribe from location\n";
     }
 }
 
@@ -226,7 +257,7 @@ void Client::messageServer() {
                 case 3:
                     break;
                 case 4:
-                    break;
+                    this->removeLocation();
                 case 5:
                     this->sendMessage("Exit");
                     return;
