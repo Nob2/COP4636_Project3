@@ -273,11 +273,11 @@ void Server::handleIndividualRequest(int socket)
         else if(requestOperation == "logout")
             this->logoutUser(socket);
         else if(requestOperation == "password")
-            this->changeUserPassword(socket);
+            //this->changeUserPassword(socket);
         else if(requestOperation == "subscribe")
             this->updateSubscription(socket);
         else if(requestOperation == "unsubscribe")
-            this->removeSubscription(socket);
+            //this->removeSubscription(socket);
         else if(requestOperation == "Exit")
             return;
         else
