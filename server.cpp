@@ -284,7 +284,7 @@ void Server::removeSubscription(int socket) {
 }
 
 void Server::changeUserPassword(int socket) {
-    this->sendMessage("Ok");
+    this->sendMessage(socket, "Ok");
 
     std::string message = receiveMessage(socket);
     std::string userName = "";
@@ -307,7 +307,7 @@ void Server::changeUserPassword(int socket) {
 
             this->registeredUsers.at(k).setPassword(newPassword);
             std::cout << "Successful password change\n";
-            
+
             return;
         }
     }
