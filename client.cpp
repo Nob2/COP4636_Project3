@@ -226,6 +226,30 @@ void Client::removeLocation() {
     }
 }
 
+void Client::updatePassword() {
+    this->sendMessage("password");
+
+    if(!acknowledgeRequest())
+        return;
+    
+    std::string newPassword;
+    std::cout << "Enter new password: " << newPassword;
+
+    std::string finalMessage = this->userName;
+    finalMessage += " " + this->password + " " + newPassword;
+
+    this->sendMessage(finalMessage);
+
+     bool operationSucceeded = this->acknowledgeResult();
+
+    if(operationSucceeded) {
+        std::cout << "Successfully updated password\n";
+        this->password = newPassword;
+    } else {
+        std::cout << "Failed to update password\n";
+    }
+}
+
 void Client::messageServer() {
     while(true) {
         printHeader();
@@ -257,7 +281,7 @@ void Client::messageServer() {
                     this->subscribeLocation();
                     break;
                 case 3:
-                    break;
+                    this->updatePassword();
                 case 4:
                     this->removeLocation();
                     break;

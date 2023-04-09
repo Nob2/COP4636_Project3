@@ -283,6 +283,38 @@ void Server::removeSubscription(int socket) {
     std::cout << "Failed to unsubscribe from location\n";
 }
 
+void Server::changeUserPassword(int socket) {
+    this->sendMessage("Ok");
+
+    std::string message = receiveMessage(socket);
+    std::string userName = "";
+    std::string oldPassword = "";
+    std::string newPassword = "";
+    
+    long unsigned int i =0; 
+    while(message[i] != ' ')
+        userName += message[i++];
+    i++; //Skip over the space
+    while(message[i] != ' ')
+        oldPassword += message[i++];
+    i++;
+    while(i < message.length())
+        newPassword += message[i++];
+    
+    for(size_t k =0; k < this->registeredUsers.size(); k++) {
+        if(this->registeredUsers.at(k).getUsername() == userName && this->registeredUsers.at(k).getPassword() == oldPassword) {
+            this->sendMessage(socket, "Success");
+
+            this->registeredUsers.at(k).setPassword(newPassword);
+            std::cout << "Successful password change\n";
+            
+            return;
+        }
+    }
+
+    this->sendMessage(socket, "Fail");
+}
+
 void Server::handleIndividualRequest(int socket)
 {
     while(true){
@@ -296,8 +328,7 @@ void Server::handleIndividualRequest(int socket)
         else if(requestOperation == "logout")
             this->logoutUser(socket);
         else if(requestOperation == "password")
-            //this->changeUserPassword(socket);
-            continue;
+            this->changeUserPassword(socket);
         else if(requestOperation == "subscribe")
             this->updateSubscription(socket);
         else if(requestOperation == "unsubscribe")
