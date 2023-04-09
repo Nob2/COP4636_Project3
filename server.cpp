@@ -254,6 +254,33 @@ void Server::updateSubscription(int socket) {
     
 }
 
+void Server::removeSubscription(int socket) {
+    this->sendMessage(socket, "Ok");
+
+    std::string message = this->receiveMessage(socket);
+    std::string user;
+
+
+    long unsigned int i =0; 
+    while(message[i] != ' ')
+        user += message[i++];
+    i++; //Skip over the space
+
+    std::string location = "";
+    while(i < message.length())
+        location += message[i++];
+    
+    for(size_t t =0; t < this->registeredUsers.size(); t++)
+        if(this->registeredUsers.at(t).getUsername() == user) {
+            this->registeredUsers.at(t).unsubscribeFromLocation(location);
+            this->sendMessage(socket, "Success");
+            std::cout << "Successfully unsubscribed from location\n";
+        }
+
+    this->sendMessage(socket, "Fail");
+    std::cout << "Failed to unsubscribe from location\n";
+}
+
 void Server::handleIndividualRequest(int socket)
 {
     while(true){
@@ -272,7 +299,7 @@ void Server::handleIndividualRequest(int socket)
         else if(requestOperation == "subscribe")
             this->updateSubscription(socket);
         else if(requestOperation == "unsubscribe")
-            //this->removeSubscription(socket);
+            this->removeSubscription(socket);
             continue;
         else if(requestOperation == "Exit")
             return;
