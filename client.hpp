@@ -24,6 +24,13 @@ class Client {
         std::string fileContents;
         struct hostent* retrieveHostName(std::string hostName);
         void printHeader();
+        void sendMessage(std::string message);
+        std::string receiveMessage();
+
+        std::string userName;
+        std::string password;
+
+        void registerUser();
     public:
         void connectToHost(std::string nameOfHost);
         void closeConnection();

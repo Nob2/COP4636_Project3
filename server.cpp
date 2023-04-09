@@ -147,6 +147,7 @@ std::string Server::receiveMessage(int socket) {
 }
 
 void Server::registerUser(int socket) {
+    this->sendMessage(socket, "Ok");
     std::string message = receiveMessage(socket);
     std::string userName = "";
     std::string password = "";

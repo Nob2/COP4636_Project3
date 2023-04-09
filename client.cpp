@@ -49,6 +49,35 @@ void Client::closeConnection() {
     close(clientSocket);
 }
 
+void Client::sendMessage( std::string message) {
+    send(this->clientSocket, message.c_str(), 1048, 0);
+}
+
+std::string Client::receiveMessage() {
+    char buffer[1024] = {0};
+    int socketRead;
+
+    socketRead = read(this->clientSocket, buffer, 1024);
+    if (socketRead == -1)
+    {
+        printf("Error communicating to socket %d, closing connection", socket);
+        close(socket);
+        return "";
+    }
+
+    return std::string(buffer);
+}
+
+void Client::registerUser() {
+    this->sendMessage("register");
+    std::string acknowledgement = this->receiveMessage();
+
+    if(acknowledgement != "Ok"){
+        std::cout << "Error from server in acknowleding request\n" << std::endl;
+        std::cout << "Received: " + acknowledgement << std::endl;
+    }
+}
+
 void Client::messageServer() {
     while(true) {
         printHeader();
@@ -57,6 +86,7 @@ void Client::messageServer() {
 
         switch(choice) {
             case 1:
+                this->registerUser();
                 break;
             case 2: 
                 break;
@@ -65,6 +95,9 @@ void Client::messageServer() {
             case 4: 
                 break;
             case 5: 
+                break;
+            case 6:
+                return;
                 break;
             default:
                 std::cout << "Invalid choice, try again\n";
@@ -76,10 +109,11 @@ void Client::messageServer() {
 
 void Client::printHeader() {
     std::cout << "What would you like to do?\n";
-    std::cout << "1 - Login User\n";
-    std::cout << "2 - Register User \n";
+    std::cout << "1 - Register User \n";
+    std::cout << "2 - Login User\n";
     std::cout << "3 - Log out\n";
     std::cout << "4 - Subscribe to new location\n";
     std::cout << "5 - Change password\n";
+    std::cout << "6 - Exit Program\n";
     std::cout << std::endl;
 }
