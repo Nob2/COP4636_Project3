@@ -122,14 +122,7 @@ void Client::loginUser() {
     std::string finalMessage = user + " " + pass;
     this->sendMessage(finalMessage);
 
-    //Give the server, enough time to respond
-    std::cout << "Sleeping to allow server to respond\n";
-    
-    usleep(10000);
-
     acknowledgement = this->receiveMessage();
-
-    std::cout << "Received: " << acknowledgement << std::endl;
 
     if(acknowledgement == "Success") {
         std::cout << "Successfully logined.\n";
