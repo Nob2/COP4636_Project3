@@ -216,6 +216,7 @@ void Server::logoutUser(int socket) {
     for(size_t i =0; i < this->registeredUsers.size(); i++) {
         if(this->registeredUsers.at(i).getUsername() == userName) {
             this->sendMessage(socket, "Success");
+            std::cout << "Successfully logged out for user\n\n";
 
             this->registeredUsers.at(i).updateStatus(false);
             this->registeredUsers.at(i).setConnectionSocket(-1);

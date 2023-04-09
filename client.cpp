@@ -127,7 +127,7 @@ void Client::loginUser() {
     acknowledgement = this->receiveMessage();
 
     if(acknowledgement == "Success") {
-        std::cout << "Successfully logined.\n";
+        std::cout << "Successfully logged in.\n";
         this->userName = user;
         this->password = pass;
         this->isLogined = true;
@@ -169,6 +169,7 @@ void Client::logout() {
 void Client::messageServer() {
     while(true) {
         printHeader();
+
         int choice;
         std::cin >> choice;
 
@@ -205,6 +206,7 @@ void Client::messageServer() {
 }
 
 void Client::printHeader() {
+    std::cout << std::endl << std::endl;
     if(!this->isLogined){
         std::cout << "What would you like to do?\n";
         std::cout << "1 - Register User \n";
