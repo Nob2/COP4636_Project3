@@ -247,6 +247,7 @@ void Server::updateSubscription(int socket) {
             this->registeredUsers.at(t).addLocation(location);
             this->sendMessage(socket, "Success");
             std::cout << "Successfully subscribed to location\n";
+            return;
         }
 
     this->sendMessage(socket, "Fail");
@@ -275,6 +276,7 @@ void Server::removeSubscription(int socket) {
             this->registeredUsers.at(t).unsubscribeFromLocation(location);
             this->sendMessage(socket, "Success");
             std::cout << "Successfully unsubscribed from location\n";
+            return;
         }
 
     this->sendMessage(socket, "Fail");

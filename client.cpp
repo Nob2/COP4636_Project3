@@ -252,12 +252,15 @@ void Client::messageServer() {
             switch(choice) {
                 case 1:
                     this->logout();
+                    break;
                 case 2:
                     this->subscribeLocation();
+                    break;
                 case 3:
                     break;
                 case 4:
                     this->removeLocation();
+                    break;
                 case 5:
                     this->sendMessage("Exit");
                     return;
