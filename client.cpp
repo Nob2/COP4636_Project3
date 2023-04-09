@@ -234,6 +234,7 @@ void Client::updatePassword() {
     
     std::string newPassword;
     std::cout << "Enter new password: " << newPassword;
+    std::cin >> newPassword;
 
     std::string finalMessage = this->userName;
     finalMessage += " " + this->password + " " + newPassword;
