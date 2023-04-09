@@ -125,6 +125,8 @@ void Client::loginUser() {
         this->userName = user;
         this->password = pass;
         this->isLogined = true;
+    } else {
+        std::cout << "Error logging in\n";
     }
 }
 

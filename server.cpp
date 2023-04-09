@@ -197,6 +197,8 @@ void Server::loginUser(int socket) {
     
     for(size_t k =0; k < this->registeredUsers.size(); k++) {
         if(this->registeredUsers.at(k).getUsername() == userName && this->registeredUsers.at(k).getPassword() == password) {
+            std::cout << "Successful login attempt\n";
+            
             this->registeredUsers.at(k).setConnectionSocket(socket);
             this->registeredUsers.at(k).updateStatus(true);
             this->sendMessage(socket, "Success");
