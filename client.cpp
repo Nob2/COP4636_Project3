@@ -90,7 +90,6 @@ void Client::registerUser() {
     std::string finalMessage = user + " " + pass;
     this->sendMessage(finalMessage);
 
-    std::cout << "Sleeping to allow server to respond\n";
     usleep(3000);
 
     acknowledgement = this->receiveMessage();
@@ -124,7 +123,8 @@ void Client::loginUser() {
     this->sendMessage(finalMessage);
 
     //Give the server, enough time to respond
-    usleep(1000);
+    std::cout << "Sleeping to allow server to respond\n";
+    usleep(3000);
 
     acknowledgement = this->receiveMessage();
 
