@@ -139,7 +139,7 @@ std::string Server::receiveMessage(int socket) {
     socketRead = read(socket, buffer, 1024);
     if (socketRead == -1)
     {
-        printf("Error communicating to socket %d, closing connection", socket);
+        printf("Error communicating to socket %i, closing connection", socket);
         close(socket);
         return "";
     }
@@ -156,7 +156,7 @@ void Server::registerUser(int socket) {
 
     std::cout << "User Register string: " << message << std::endl;
     
-    int i =0; 
+    long unsigned int i =0; 
     while(message[i] != ' ')
         userName += message[i++];
     i++;
@@ -190,7 +190,7 @@ void Server::loginUser(int socket) {
 
     std::cout << "Login string: " << message << std::endl;
     
-    int i =0; 
+    long unsigned int i =0; 
     while(message[i] != ' ')
         userName += message[i++];
     i++; //Skip over the space
@@ -203,10 +203,10 @@ void Server::loginUser(int socket) {
     for(size_t k =0; k < this->registeredUsers.size(); k++) {
         if(this->registeredUsers.at(k).getUsername() == userName && this->registeredUsers.at(k).getPassword() == password) {
             std::cout << "Successful login attempt\n";
+            this->sendMessage(socket, "Success");
 
             this->registeredUsers.at(k).setConnectionSocket(socket);
             this->registeredUsers.at(k).updateStatus(true);
-            this->sendMessage(socket, "Success");
             return;
         }
     }

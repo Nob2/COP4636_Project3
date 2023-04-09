@@ -120,6 +120,8 @@ void Client::loginUser() {
 
     acknowledgement = this->receiveMessage();
 
+    std::cout << "Received: " << acknowledgement << std::endl;
+
     if(acknowledgement == "Success") {
         std::cout << "Successfully logined.\n";
         this->userName = user;
