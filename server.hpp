@@ -49,7 +49,7 @@ class Server {
         void changeUserPassword(int socket);
         void updateSubscription(int socket);
         void removeSubscription(int socket);
-        void getUserSubscription(int socket);
+        void listUserSubscription(int socket);
     public:
         void initalizeServer();
         void handleRequests();
