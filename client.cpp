@@ -66,6 +66,8 @@ std::string Client::receiveMessage() {
         return "";
     }
 
+    std::cout << "Read: " << socketRead << std::endl;
+
     return std::string(buffer);
 }
 
