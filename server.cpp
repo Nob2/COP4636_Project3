@@ -199,6 +199,8 @@ void Server::loginUser(int socket) {
 
             this->registeredUsers.at(k).setConnectionSocket(socket);
             this->registeredUsers.at(k).updateStatus(true);
+
+            std::cout << "Successful login attempt\n";
             return;
         }
     }

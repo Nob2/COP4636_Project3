@@ -124,7 +124,7 @@ void Client::loginUser() {
 
     //Give the server, enough time to respond
     std::cout << "Sleeping to allow server to respond\n";
-    usleep(3000);
+    usleep(10000);
 
     acknowledgement = this->receiveMessage();
 
