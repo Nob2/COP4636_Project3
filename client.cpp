@@ -61,7 +61,7 @@ std::string Client::receiveMessage() {
     if (socketRead == -1)
     {
         printf("Error communicating to socket %d, closing connection", socket);
-        close(socket);
+        close(this->clientSocket);
         return "";
     }
 
