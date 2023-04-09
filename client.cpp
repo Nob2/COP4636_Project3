@@ -98,6 +98,9 @@ void Client::registerUser() {
         this->password = pass;
         this->isLogined = true;
     }
+    else if(acknowledgement == "Fail") {
+        std::cout << "Failed to register user. User most likely already exists.\n\n";
+    }
 }
 
 void Client::loginUser() {

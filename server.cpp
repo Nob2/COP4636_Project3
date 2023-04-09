@@ -164,6 +164,7 @@ void Server::registerUser(int socket) {
     //Verify user doesn't already exist
     for(size_t k =0; k < this->registeredUsers.size(); k++) {
         if(this->registeredUsers.at(k).getUsername() == userName) {
+            this->sendMessage("Fail");
             printf("User already exists, cannot register\n");
             return;
         }
