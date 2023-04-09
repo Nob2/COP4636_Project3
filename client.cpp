@@ -7,8 +7,9 @@
 
 #include "client.hpp"
 #include <string.h>
+#include <iostream>
 
-struct hostent* clientManager::retrieveHostName(std::string nameOfHost) {
+struct hostent* Client::retrieveHostName(std::string nameOfHost) {
     this->nameOfHost = nameOfHost;
     struct hostent *hostName = gethostbyname(nameOfHost.c_str());
 
@@ -23,7 +24,7 @@ struct hostent* clientManager::retrieveHostName(std::string nameOfHost) {
     return hostName;
 }
 
-void clientManager::connectToHost(std::string hostName) {
+void Client::connectToHost(std::string hostName) {
     retrieveHostName(hostName);
 
     this->server_address.sin_family = AF_INET;
@@ -44,6 +45,44 @@ void clientManager::connectToHost(std::string hostName) {
     printf("Connection to server has succeed\n");
 }
 
-void clientManager::closeConnection() {
+void Client::closeConnection() {
     close(clientSocket);
+}
+
+void Client::messageServer() {
+    while(true) {
+        printHeader();
+        int choice;
+        std::cin >> choice;
+
+        switch(choice) {
+            1: {
+
+            }
+            2: {
+
+            }
+            3: {
+
+            }
+            4: {
+
+            }5: {
+
+            }
+            default:
+                std::cout << "Invalid choice, try again\n";
+
+        }
+    }
+}
+
+void Client::printHeader() {
+    std::cout << "What would you like to do?\n";
+    std::cout << "1 - Login User\n";
+    std::cout << "2 - Register User \n";
+    std::cout << "3 - Log out\n";
+    std::cout << "4 - Subscribe to new location\n";
+    std::cout << "5 - Change password\n";
+    std::cout << std::endl;
 }

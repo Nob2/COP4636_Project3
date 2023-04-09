@@ -39,6 +39,16 @@ class Server {
         void handleIndividualRequest(int socket);
         void exportUsers();
         void importUsers();
+
+        std::string receiveMessage(int socket);
+        void sendMessage(int socket, std::string message);
+
+        void loginUser(int connectionSocket);
+        void logoutUser(int connectionSocket);
+        void registerUser(int connectionSocket);
+        void changeUserPassword(std::string userName, std::string newPassword);
+        void updateSubscription(std::string userName, std::string location);
+        void getUserSubscription(std::string userName);
     public:
         void initalizeServer();
         void handleRequests();

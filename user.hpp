@@ -14,7 +14,7 @@
 
 class User {
     private:
-        int connectedSocket;
+        int connectedSocket = -1;
         std::string userName;
         std::string password;
         std::vector<std::string> subscribedLocations;

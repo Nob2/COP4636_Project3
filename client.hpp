@@ -16,18 +16,18 @@
 #include <unistd.h>
 #include <netdb.h>
 
-class client {
+class Client {
     private:
         int clientSocket;
         std::string nameOfHost;
         struct sockaddr_in server_address;
         std::string fileContents;
         struct hostent* retrieveHostName(std::string hostName);
+        void printHeader();
     public:
         void connectToHost(std::string nameOfHost);
-        bool retrieveFile(std::string fileName);
-        void printLastFile();
         void closeConnection();
+        void messageServer();
 };
 
 #endif

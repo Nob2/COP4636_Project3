@@ -3,7 +3,6 @@
 #include <arpa/inet.h>
 #include <fstream>
 #include <sstream>
-#include <iostream>
 
 /**
  * Author: Nicholas Brown-Duncan
@@ -72,8 +71,6 @@ void Server::exportUsers() {
     for(size_t i=0; i < this->registeredUsers.size(); i++) {
         output << this->registeredUsers.at(i).getUsername() << ' ' << this->registeredUsers.at(i).getPassword() << ' ';
 
-        std::cout << this->registeredUsers.at(i).getSubscribedLocations().size() << std::endl;
-
         for(size_t j=0; j < this->registeredUsers.at(i).getSubscribedLocations().size(); j++) {
             if(j != 0)
                 output << ' ';
@@ -121,17 +118,109 @@ void Server::importUsers() {
     input.close();
 }
 
+void Server::sendMessage(int socket, std::string message) {
+    send(socket, message.c_str(), 1048, 0);
+}
+
 void Server::initalizeServer()
 {
-    //initalizeListenSocket();
-    //defineSocketAddress();
+    initalizeListenSocket();
+    defineSocketAddress();
     importUsers();
-    //beginListening();
+    beginListening();
     exportUsers();
+}
+
+std::string Server::receiveMessage(int socket) {
+    char buffer[1024] = {0};
+    int socketRead;
+
+    socketRead = read(socket, buffer, 1024);
+    if (socketRead == -1)
+    {
+        printf("Error communicating to socket %d, closing connection", socket);
+        close(socket);
+        return "";
+    }
+
+    return buffer.c_str();
+}
+
+void Server::registerUser(int socket) {
+    std::string message = receiveMessage(socket);
+    std::string userName = "";
+    std::string password = "";
+    
+    int i =0; 
+    while(message[i] != " ")
+        userName += message[i++];
+    
+    while(i < message.length())
+        password += message[i++];
+    
+    //Verify user doesn't already exist
+    for(size_t k =0; k < this->registeredUsers.size(); k++) {
+        if(this->registeredUsers.at(k).getUsername() == userName) {
+            printf("User already exists, cannot register\n");
+            return;
+        }
+    }
+
+    //User doesn't exist
+    User user(userName, password);
+    user.setConnectionSocket(socket);
+    user.updateStatus(true);
+
+    this->registeredUsers.push_back(user);
+}
+
+void Server::loginUser(int socket) {
+    std::string message = receiveMessage(socket);
+    std::string userName = "";
+    std::string password = "";
+    
+    int i =0; 
+    while(message[i] != " ")
+        userName += message[i++];
+    
+    while(i < message.length())
+        password += message[i++];
+    
+    for(size_t k =0; k < this->registeredUsers.size(); k++) {
+        if(this->registeredUsers.at(k).getUsername == userName && this->registeredUsers.at(k).getPassword() == password) {
+            this->registeredUsers.at(k).setConnectionSocket(socket);
+            this->registeredUsers.at(k).updateStatus(true);
+        }
+    }
+}
+
+void Server::logoutUser(int socket) {
+    std::string userName = receiveMessage(socket);
+
+    for(size_t i =0; i < this->registeredUsers.size(); i++) {
+        if(this->registeredUsers.at(i).getUsername() == userName) {
+            this->registeredUsers.at(i).updateStatus(false);
+            this->registeredUsers.at(i).setConnectionSocket(-1);
+            return;
+        }
+    }
 }
 
 void Server::handleIndividualRequest(int socket)
 {
+    while(true){
+        std::string requestOperation = receiveMessage(socket);
+
+        if(requestOperation == "login")
+            this->loginUser(socket);
+        else if(requestOperation == "register")
+            this->registerUser(socket);
+        else if(requestOperation == "logout")
+            this->logoutUser(socket);
+        else
+            printf("Invalid request received\n");
+        return;
+    }
 }
 
 void Server::handleRequests()
@@ -152,6 +241,7 @@ void Server::handleRequests()
 
 void Server::closeServer()
 {
+    exportUsers();
     /** for (size_t i = 0; i < this->clientThreads.size(); i++)
     {
         this->clientThreads.at(i).join();
