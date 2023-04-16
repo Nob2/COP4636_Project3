@@ -493,7 +493,8 @@ void Server::listOnlineUsers(int socket) {
 
 void Server::listPreviousMessages(int socket) {
     this->sendMessage(socket, "Ok");
-
+    std::string userName = this->receiveMessage(socket);
+    
     std::string finalMessage = "";
     std::vector<std::string> previousMessages;
 
@@ -550,7 +551,7 @@ void Server::handleIndividualRequest(int socket)
         else if(requestOperation == "onlineUsers")
             this->listOnlineUsers(socket);
         else if(requestOperation == "listMessages")
-            this->listPreviousMessages();
+            this->listPreviousMessages(socket);
         else {
             printf("Invalid request received\n");
             this->sendMessage(socket, "Invalid");

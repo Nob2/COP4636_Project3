@@ -389,6 +389,7 @@ void Client::previousMessages() {
     if(!acknowledgeRequest())
         return;
     
+    this->sendMessage(clientSocket, this->userName);
     std::string serverResponse = this->receiveMessage();
 
     std::cout << "Last 10 received messages are: \n" << serverResponse << std::endl;
