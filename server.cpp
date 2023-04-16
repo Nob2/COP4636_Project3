@@ -376,7 +376,7 @@ void Server::registerCommunicationSocket(int socket) {
 }
 
 void Server::handleMessaging(int socket) {
-    this->sendMessage("Ok");
+    this->sendMessage(socket, "Ok");
     std::string sender = "";
     std::string receiver = "";
     std::string fullText = this->receiveMessage(socket);
@@ -385,13 +385,13 @@ void Server::handleMessaging(int socket) {
 
     long unsigned int i =0; 
     while(fullText[i] != ' ')
-        sender += message[i++];
+        sender += fullText[i++];
     i++;
     while(fullText[i] != ' ')
-        receiver += message[i++];
+        receiver += fullText[i++];
     i++;
     while(i < fullText.length())
-        incomingMessage += message[i++];
+        incomingMessage += fullText[i++];
     
     outgoingMessage = "From: " + sender +" Message: " + incomingMessage;
 
