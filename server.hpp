@@ -50,6 +50,7 @@ class Server {
         void updateSubscription(int socket);
         void removeSubscription(int socket);
         void listUserSubscription(int socket);
+        void registerCommunicationSocket(int socket);
     public:
         void initalizeServer();
         void handleRequests();

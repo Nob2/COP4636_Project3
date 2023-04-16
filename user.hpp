@@ -15,6 +15,7 @@
 class User {
     private:
         int connectedSocket = -1;
+        int communicationSocket = -1;
         std::string userName;
         std::string password;
         std::vector<std::string> subscribedLocations;
@@ -26,6 +27,9 @@ class User {
 
         int getConnectedSocket() {return this->connectedSocket;}
         void setConnectionSocket(int socket) {this->connectedSocket = socket;}
+
+        int getCommunicationSocket() {return this->communicationSocket;}
+        void setCommunicationSocket(int socket) {this->communicationSocket = socket;}
 
         std::string getUsername() {return this->userName;}
         void setUsername(std::string userName) {this->userName = userName;}

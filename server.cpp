@@ -172,11 +172,15 @@ void Server::registerUser(int socket) {
     std::cout << "Registration complete!\n\n";
 
     //User doesn't exist
+    userLock.lock();
+
     User user(userName, password);
     user.setConnectionSocket(socket);
     user.updateStatus(true);
 
     this->registeredUsers.push_back(user);
+    userLock.unlock();
+    
     this->sendMessage(socket, "Success");
 }
 
@@ -195,12 +199,15 @@ void Server::loginUser(int socket) {
     
     for(size_t k =0; k < this->registeredUsers.size(); k++) {
         if(this->registeredUsers.at(k).getUsername() == userName && this->registeredUsers.at(k).getPassword() == password) {
+            userLock.lock();
+
             this->sendMessage(socket, "Success");
 
             this->registeredUsers.at(k).setConnectionSocket(socket);
             this->registeredUsers.at(k).updateStatus(true);
 
             std::cout << "Successful login attempt\n";
+            userLock.unlock();
             return;
         }
     }
@@ -214,11 +221,13 @@ void Server::logoutUser(int socket) {
 
     for(size_t i =0; i < this->registeredUsers.size(); i++) {
         if(this->registeredUsers.at(i).getUsername() == userName) {
+            userLock.lock();
             this->sendMessage(socket, "Success");
             std::cout << "Successfully logged out for user\n\n";
 
             this->registeredUsers.at(i).updateStatus(false);
             this->registeredUsers.at(i).setConnectionSocket(-1);
+            userLock.unlock();
             return;
         }
     }
@@ -241,11 +250,15 @@ void Server::updateSubscription(int socket) {
     while(i < message.length())
         location += message[i++];
     
+
     for(size_t t =0; t < this->registeredUsers.size(); t++)
         if(this->registeredUsers.at(t).getUsername() == user) {
+            userLock.lock();
+
             this->registeredUsers.at(t).addLocation(location);
             this->sendMessage(socket, "Success");
             std::cout << "Successfully subscribed to location\n";
+            userLock.unlock();
             return;
         }
 
@@ -272,9 +285,12 @@ void Server::removeSubscription(int socket) {
     
     for(size_t t =0; t < this->registeredUsers.size(); t++)
         if(this->registeredUsers.at(t).getUsername() == user) {
+            userLock.lock();
+
             this->registeredUsers.at(t).unsubscribeFromLocation(location);
             this->sendMessage(socket, "Success");
             std::cout << "Successfully unsubscribed from location\n";
+            userLock.unlock();
             return;
         }
 
@@ -302,11 +318,14 @@ void Server::changeUserPassword(int socket) {
     
     for(size_t k =0; k < this->registeredUsers.size(); k++) {
         if(this->registeredUsers.at(k).getUsername() == userName && this->registeredUsers.at(k).getPassword() == oldPassword) {
+            userLock.lock();
+
             this->sendMessage(socket, "Success");
 
             this->registeredUsers.at(k).setPassword(newPassword);
             std::cout << "Successful password change\n";
 
+            userLock.unlock();
             return;
         }
     }
@@ -339,6 +358,23 @@ void Server::listUserSubscription(int socket) {
     this->sendMessage(socket, finalMessage);
 }
 
+void Server::registerCommunicationSocket(int socket) {
+    this->sendMessage(socket, "Ok");
+    std::string userName = this->receiveMessage(socket);
+
+    for(size_t i =0; i < this->registeredUsers.size(); i++)
+        if(this->registeredUsers.at(i).getUsername() == userName){
+            userLock.lock();
+
+            this->registeredUsers.at(i).setCommunicationSocket(socket);
+            userLock.unlock();
+            this->sendMessage(socket, "Success");
+            return;
+        }
+    
+    this->sendMessage(socket, "Fail");
+}
+
 void Server::handleIndividualRequest(int socket)
 {
     while(true){
@@ -361,6 +397,10 @@ void Server::handleIndividualRequest(int socket)
             this->listUserSubscription(socket);
         else if(requestOperation == "Exit")
             return;
+        else if(requestOperation == "listen") {
+            this->registerCommunicationSocket(socket);
+            return;
+        }
         else {
             printf("Invalid request received\n");
             this->sendMessage(socket, "Invalid");
