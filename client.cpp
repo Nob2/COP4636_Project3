@@ -139,7 +139,6 @@ void Client::listenForMessages() {
     this->sendMessage(communicationSocket, "listen");
 
     char buffer[4028] = {0};
-    int socketRead;
 
     if( read(this->communicationSocket, buffer, 4028) < 0){
         std::cout << "Error listening on communication socket, exitting program\n";
@@ -152,8 +151,20 @@ void Client::listenForMessages() {
         exit(1);
     }
 
-    if(acknowledgeResult()){
+    this->sendMessage(communicationSocket, this->userName);
+
+    if( read(this->communicationSocket, buffer, 4028) < 0){
+        std::cout << "Error listening on communication socket, exitting program\n";
+        exit(1);
+    }
+
+    response = std::string(buffer);
+
+    if(response == "Success"){
         this->listenThread = std::thread(&Client::printIncomingMessages, this);
+    } else {
+        std::cout << "Failed to attach communication socket to user, exitting!\n";
+        exit(1);
     }
 }
 
