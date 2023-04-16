@@ -165,7 +165,7 @@ std::string Server::registerUser(int socket) {
         if(this->registeredUsers.at(k).getUsername() == userName) {
             this->sendMessage(socket, "Fail");
             printf("User already exists, cannot register\n");
-            return;
+            return "Fail";
         }
     }
 
