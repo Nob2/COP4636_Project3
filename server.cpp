@@ -402,6 +402,8 @@ void Server::handleMessaging(int socket) {
         if(this->registeredUsers.at(j).getUsername() == receiver) {
             if(!this->registeredUsers.at(j).isOnline()) {
                 this->sendMessage(socket, "User is offline, message will not be sent");
+                std::cout << "Offline User: Invalid request\n";
+                return;
             } else {
                 this->sendMessage(this->registeredUsers.at(j).getCommunicationSocket(), outgoingMessage);
                 this->sendMessage(socket, "Message successfully delivered");
