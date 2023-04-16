@@ -49,6 +49,7 @@ class Client {
         void printIncomingMessages();
 
         void messageUser();
+        void previousMessages();
         void messageGroup();
 
         void checkOnlineUsers();

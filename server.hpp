@@ -57,6 +57,7 @@ class Server {
         void handleGroupMessaging(int socket);
 
         void listOnlineUsers(int socket);
+        void listPreviousMessages(int socket);
 
         void disconnectCommunicationSocket(int socket);
     public:

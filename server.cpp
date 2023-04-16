@@ -491,6 +491,30 @@ void Server::listOnlineUsers(int socket) {
     this->sendMessage(socket, finalMessage);
 }
 
+void Server::listPreviousMessages(int socket) {
+    this->sendMessage(socket, "Ok");
+
+    std::string finalMessage = "";
+    std::vector<std::string> previousMessages;
+
+    for(size_t i =0; i < this->registeredUsers.size(); i++) {
+        if(this->registeredUsers.at(i).getUsername() == userName)
+            previousMessages = this->registeredUsers.at(i).getReceivedMessages();
+    }
+    if(previousMessages.size() == 0)
+        finalMessage = "None";
+    else{
+        for(size_t i =0; i < previousMessages.size(); i++) {
+            if(i == previousMessages.size() - 1)
+                finalMessage += previousMessages.at(i);
+            else
+                finalMessage += previousMessages.at(i) + ",\n";
+        }
+    }
+
+    this->sendMessage(socket, finalMessage);
+}
+
 void Server::handleIndividualRequest(int socket)
 {
     while(true){
@@ -525,6 +549,8 @@ void Server::handleIndividualRequest(int socket)
         }
         else if(requestOperation == "onlineUsers")
             this->listOnlineUsers(socket);
+        else if(requestOperation == "listMessages")
+            this->listPreviousMessages();
         else {
             printf("Invalid request received\n");
             this->sendMessage(socket, "Invalid");

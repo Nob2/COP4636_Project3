@@ -383,6 +383,17 @@ void Client::checkOnlineUsers() {
     std::cout << "Following users are online: " << serverResponse << std::endl;
 }
 
+void Client::previousMessages() {
+    this->sendMessage(clientSocket, "listMessages");
+
+    if(!acknowledgeRequest())
+        return;
+    
+    std::string serverResponse = this->receiveMessage();
+
+    std::cout << "Last 10 received messages are: \n" << serverResponse << std::endl;
+}
+
 void Client::messageServer() {
     while(true) {
         printHeader();
@@ -431,11 +442,14 @@ void Client::messageServer() {
                 case 8:
                     this->checkOnlineUsers();
                     break;
+                case 9:
+                    this->previousMessages();
+                    break;
                 case 10:
                     this->sendMessage(clientSocket, "Exit");
                     this->sendMessage(clientSocket, this->userName);
                     this->listenThread.join();
-                    return;
+                    exit(1);
                 default:
                     std::cout << "Invalid choice, try again\n\n";
                     break;
