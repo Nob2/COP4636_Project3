@@ -391,6 +391,7 @@ void Client::messageServer() {
                     break;
                 case 7:
                     this->sendMessage(clientSocket, "Exit");
+                    this->sendMessage(communicationSocket, "Exit");
                     return;
                 default:
                     std::cout << "Invalid choice, try again\n\n";
