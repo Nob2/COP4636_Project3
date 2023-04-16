@@ -338,7 +338,7 @@ void Client::messageUser() {
 
     std::string finalMessage = this->userName;
     finalMessage += " " + otherUser;
-    finalMessage += message;
+    finalMessage += " " + message;
 
     this->sendMessage(clientSocket, finalMessage);
     std::string serverResponse = this->receiveMessage();
