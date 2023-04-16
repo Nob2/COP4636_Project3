@@ -138,8 +138,20 @@ void Client::listenForMessages() {
 
     this->sendMessage(communicationSocket, "listen");
 
-    if(!acknowledgeRequest())
-        return;
+    char buffer[4028] = {0};
+    int socketRead;
+
+    if( read(this->communicationSocket, buffer, 4028) < 0){
+        std::cout << "Error listening on communication socket, exitting program\n";
+        exit(1);
+    }
+    std::string response(buffer);
+
+    if(response != "Ok") {
+        std::cout << "Server failed to acknowledge listen request, exitting\n";
+        exit(1);
+    }
+
     if(acknowledgeResult()){
         this->listenThread = std::thread(&Client::printIncomingMessages, this);
     }
