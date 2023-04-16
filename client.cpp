@@ -337,8 +337,7 @@ void Client::messageUser() {
     std::cin.ignore();
     std::getline(std::cin, message);
 
-    std::string finalMessage = this->userName;
-    finalMessage += " " + otherUser;
+    std::string finalMessage = otherUser;
     finalMessage += " " + message;
 
     this->sendMessage(clientSocket, finalMessage);
@@ -348,10 +347,10 @@ void Client::messageUser() {
 }
 
 void Client::messageGroup() {
-    std::string otherUser;
+    std::string desiredGroup;
 
     std::cout << "To which group are you sending a message?\n";
-    std::cin >> otherUser;
+    std::cin >> desiredGroup;
 
     this->sendMessage(clientSocket, "groupMessage");
     if(!acknowledgeRequest())
@@ -362,8 +361,7 @@ void Client::messageGroup() {
     std::cin.ignore();
     std::getline(std::cin, message);
 
-    std::string finalMessage = this->userName;
-    finalMessage += " " + otherUser;
+    std::string finalMessage = desiredGroup;
     finalMessage += " " + message;
 
     this->sendMessage(clientSocket, finalMessage);
@@ -445,7 +443,6 @@ void Client::messageServer() {
                     break;
                 case 10:
                     this->sendMessage(clientSocket, "Exit");
-                    this->sendMessage(clientSocket, this->userName);
                     exit(1);
                 default:
                     std::cout << "Invalid choice, try again\n\n";

@@ -43,9 +43,9 @@ class Server {
         std::string receiveMessage(int socket);
         void sendMessage(int socket, std::string message);
 
-        void loginUser(int connectionSocket);
+        std::string loginUser(int connectionSocket);
         void logoutUser(int connectionSocket);
-        void registerUser(int connectionSocket);
+        std::string registerUser(int connectionSocket);
         void changeUserPassword(int socket);
 
         void updateSubscription(int socket);
@@ -53,13 +53,13 @@ class Server {
         void listUserSubscription(int socket);
         void registerCommunicationSocket(int socket);
 
-        void handleMessaging(int socket);
-        void handleGroupMessaging(int socket);
+        void handleMessaging(int socket, std::string sender);
+        void handleGroupMessaging(int socket, std::string sender);
 
         void listOnlineUsers(int socket);
         void listPreviousMessages(int socket);
 
-        void disconnectCommunicationSocket(int socket);
+        void disconnectCommunicationSocket(int socket, std::string user);
     public:
         void initalizeServer();
         void handleRequests();

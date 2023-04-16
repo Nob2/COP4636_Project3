@@ -146,7 +146,7 @@ std::string Server::receiveMessage(int socket) {
     return std::string(buffer);
 }
 
-void Server::registerUser(int socket) {
+std::string Server::registerUser(int socket) {
     //We got your request, send it along
     this->sendMessage(socket, "Ok");
     std::string message = receiveMessage(socket);
@@ -182,9 +182,11 @@ void Server::registerUser(int socket) {
     userLock.unlock();
     
     this->sendMessage(socket, "Success");
+
+    return userName;
 }
 
-void Server::loginUser(int socket) {
+std::string Server::loginUser(int socket) {
     this->sendMessage(socket, "Ok");
     std::string message = receiveMessage(socket);
     std::string userName = "";
@@ -208,11 +210,12 @@ void Server::loginUser(int socket) {
 
             std::cout << "Successful login attempt\n";
             userLock.unlock();
-            return;
+            return userName;
         }
     }
 
     this->sendMessage(socket, "Fail");
+    return "Fail";
 }
 
 void Server::logoutUser(int socket) {
@@ -375,18 +378,14 @@ void Server::registerCommunicationSocket(int socket) {
     this->sendMessage(socket, "Fail");
 }
 
-void Server::handleMessaging(int socket) {
+void Server::handleMessaging(int socket, std::string sender) {
     this->sendMessage(socket, "Ok");
-    std::string sender = "";
     std::string receiver = "";
     std::string fullText = this->receiveMessage(socket);
     std::string incomingMessage = "";
     std::string outgoingMessage = "";
 
     long unsigned int i =0; 
-    while(fullText[i] != ' ')
-        sender += fullText[i++];
-    i++;
     while(fullText[i] != ' ')
         receiver += fullText[i++];
     i++;
@@ -417,18 +416,14 @@ void Server::handleMessaging(int socket) {
     this->sendMessage(socket, "Failed to send message, user does not exist!");
 }
 
-void Server::handleGroupMessaging(int socket) {
+void Server::handleGroupMessaging(int socket, std::string sender) {
     this->sendMessage(socket, "Ok");
-    std::string sender = "";
     std::string subscribedLocationReceiver = "";
     std::string fullText = this->receiveMessage(socket);
     std::string incomingMessage = "";
     std::string outgoingMessage = "";
 
     long unsigned int i =0; 
-    while(fullText[i] != ' ')
-        sender += fullText[i++];
-    i++;
     while(fullText[i] != ' ')
         subscribedLocationReceiver += fullText[i++];
     i++;
@@ -452,9 +447,7 @@ void Server::handleGroupMessaging(int socket) {
     this->sendMessage(socket, "Sent message to all online users, subscribed to: " + subscribedLocationReceiver);
 }
 
-void Server::disconnectCommunicationSocket(int socket) {
-    std::string user = this->receiveMessage(socket);
-
+void Server::disconnectCommunicationSocket(int socket, std::string user) {
     for(size_t i =0; i < this->registeredUsers.size(); i++)
         if(this->registeredUsers.at(i).getUsername() == user){
             this->sendMessage(this->registeredUsers.at(i).getCommunicationSocket(), "Exit");
@@ -516,14 +509,15 @@ void Server::listPreviousMessages(int socket) {
 
 void Server::handleIndividualRequest(int socket)
 {
+    std::string user;
     while(true){
         std::string requestOperation = receiveMessage(socket);
         std::cout << "Request: " << requestOperation << std::endl;
 
         if(requestOperation == "login")
-            this->loginUser(socket);
+            user = this->loginUser(socket);
         else if(requestOperation == "register")
-            this->registerUser(socket);
+            user = this->registerUser(socket);
         else if(requestOperation == "logout")
             this->logoutUser(socket);
         else if(requestOperation == "password")
@@ -535,13 +529,13 @@ void Server::handleIndividualRequest(int socket)
         else if(requestOperation == "list")
             this->listUserSubscription(socket);
         else if(requestOperation == "Exit"){
-            this->disconnectCommunicationSocket(socket);
+            this->disconnectCommunicationSocket(socket, user);
             return;
         }
         else if(requestOperation == "message")
-            this->handleMessaging(socket);
+            this->handleMessaging(socket, user);
         else if(requestOperation == "groupMessage")
-            this->handleGroupMessaging(socket);
+            this->handleGroupMessaging(socket, user);
         else if(requestOperation == "listen") {
             this->registerCommunicationSocket(socket);
             return;
