@@ -393,7 +393,7 @@ void Server::handleMessaging(int socket) {
     while(i < fullText.length())
         incomingMessage += fullText[i++];
     
-    outgoingMessage = "From: " + sender +" Message: " + incomingMessage;
+    outgoingMessage = "From: " + sender +"\n Message: " + incomingMessage;
 
     //Verify receiver is online
     for(size_t j =0; j < this->registeredUsers.size(); j++)
@@ -468,8 +468,6 @@ void Server::disconnectCommunicationSocket(int socket) {
 }
 
 void Server::listOnlineUsers(int socket) {
-    this->sendMessage(socket, "Ok");
-
     std::string finalMessage = "";
     std::vector<std::string> onlineUsers;
 
@@ -494,7 +492,7 @@ void Server::listOnlineUsers(int socket) {
 void Server::listPreviousMessages(int socket) {
     this->sendMessage(socket, "Ok");
     std::string userName = this->receiveMessage(socket);
-    
+
     std::string finalMessage = "";
     std::vector<std::string> previousMessages;
 

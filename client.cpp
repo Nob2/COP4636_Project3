@@ -374,9 +374,6 @@ void Client::messageGroup() {
 
 void Client::checkOnlineUsers() {
     this->sendMessage(clientSocket, "onlineUsers");
-
-    if(!acknowledgeRequest())
-        return;
     
     std::string serverResponse = this->receiveMessage();
 
@@ -449,7 +446,6 @@ void Client::messageServer() {
                 case 10:
                     this->sendMessage(clientSocket, "Exit");
                     this->sendMessage(clientSocket, this->userName);
-                    this->listenThread.join();
                     exit(1);
                 default:
                     std::cout << "Invalid choice, try again\n\n";
