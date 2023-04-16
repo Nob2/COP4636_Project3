@@ -52,6 +52,8 @@ class Server {
         void listUserSubscription(int socket);
         void registerCommunicationSocket(int socket);
         void handleMessaging(int socket);
+
+        void disconnectCommunicationSocket(int socket);
     public:
         void initalizeServer();
         void handleRequests();

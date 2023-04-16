@@ -414,6 +414,14 @@ void Server::handleMessaging(int socket) {
     this->sendMessage(socket, "Failed to send message, user does not exist!");
 }
 
+void Server::disconnectCommunicationSocket(int socket) {
+    std::string user = this->receiveMessage(socket);
+
+    for(size_t i =0; i < this->registeredUsers.size(); i++)
+        if(this->registeredUsers.at(i).getUsername() == user)
+            this->sendMessage(this->registeredUsers.at(i).getCommunicationSocket(), "Exit");
+}
+
 void Server::handleIndividualRequest(int socket)
 {
     while(true){
@@ -434,8 +442,10 @@ void Server::handleIndividualRequest(int socket)
             this->removeSubscription(socket);
         else if(requestOperation == "list")
             this->listUserSubscription(socket);
-        else if(requestOperation == "Exit")
+        else if(requestOperation == "Exit"){
+            this->disconnectCommunicationSocket(socket);
             return;
+        }
         else if(requestOperation == "message")
             this->handleMessaging(socket);
         else if(requestOperation == "listen") {
