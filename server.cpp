@@ -439,8 +439,8 @@ void Server::handleGroupMessaging(int socket) {
 
     //Verify receiver is online
     for(size_t j =0; j < this->registeredUsers.size(); j++)
-        if(this->registeredUsers.at(j).isSubscribedTo(subscribedLocationReceiver)) {
-            if(this->registeredUsers.at(j).isOnline()) {
+        if(this->registeredUsers.at(j).isSubscribedTo(subscribedLocationReceiver) && this->registeredUsers.at(j).isOnline()) {
+            if(this->registeredUsers.at(j).getUsername() != sender) {
                 this->sendMessage(this->registeredUsers.at(j).getCommunicationSocket(), outgoingMessage);
 
                 userLock.lock();
