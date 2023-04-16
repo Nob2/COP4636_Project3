@@ -347,6 +347,31 @@ void Client::messageUser() {
     std::cout << "Server response: " << serverResponse << std::endl;
 }
 
+void Client::messageGroup() {
+    std::string otherUser;
+
+    std::cout << "To which group are you sending a message?\n";
+    std::cin >> otherUser;
+
+    this->sendMessage(clientSocket, "groupMessage");
+    if(!acknowledgeRequest())
+        return;
+    
+    std::cout << "What is your message?\n";
+    std::string message;
+    std::cin.ignore();
+    std::getline(std::cin, message);
+
+    std::string finalMessage = this->userName;
+    finalMessage += " " + otherUser;
+    finalMessage += " " + message;
+
+    this->sendMessage(clientSocket, finalMessage);
+    std::string serverResponse = this->receiveMessage();
+
+    std::cout << "Server response: " << serverResponse << std::endl;
+}
+
 void Client::messageServer() {
     while(true) {
         printHeader();
@@ -390,6 +415,9 @@ void Client::messageServer() {
                     this->messageUser();
                     break;
                 case 7:
+                    this->messageGroup();
+                    break;
+                case 10:
                     this->sendMessage(clientSocket, "Exit");
                     this->sendMessage(clientSocket, this->userName);
                     this->listenThread.join();
@@ -418,7 +446,10 @@ void Client::printHeader() {
         std::cout << "4 - Unsubscribe from location\n";
         std::cout << "5 - List subscriptions\n";
         std::cout << "6 - Message User\n";
-        std::cout << "7 - Exit Program\n";
+        std::cout << "7 - Send Group Message\n";
+        std::cout << "8 - See Online Users\n";
+        std::cout << "9 - See last 10 messages received\n";
+        std::cout << "10 - Exit Program\n";
         std::cout << std::endl;
     }
 }

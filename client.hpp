@@ -39,13 +39,17 @@ class Client {
         void registerUser();
         void loginUser();
         void logout();
+        void updatePassword();
+
         void subscribeLocation();
         void removeLocation();
-        void updatePassword();
         void listSubscriptions();
+
         void listenForMessages();
         void printIncomingMessages();
+
         void messageUser();
+        void messageGroup();
 
         bool acknowledgeRequest();
         bool acknowledgeResult();

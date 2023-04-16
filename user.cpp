@@ -33,3 +33,19 @@ void User::unsubscribeFromLocation(std::string location) {
         }
     }
 }
+
+void User::addReceiveMessage(std::string message) {
+
+    if(this->receivedMessages.size() == 10)
+        this->receivedMessages.erase(this->receivedMessages.begin());
+    
+    this->receivedMessages.push_back(message);
+}
+
+bool User::isSubscribedTo(std::string location) {
+    for(size_t i =0; i < this->subscribedLocations.size(); i++)
+        if(this->subscribedLocations.at(i) == location)
+            return true;
+    
+    return false;
+}

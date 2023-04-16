@@ -383,8 +383,6 @@ void Server::handleMessaging(int socket) {
     std::string incomingMessage = "";
     std::string outgoingMessage = "";
 
-    std::cout << "Message: " << fullText << std::endl;
-
     long unsigned int i =0; 
     while(fullText[i] != ' ')
         sender += fullText[i++];
@@ -406,6 +404,11 @@ void Server::handleMessaging(int socket) {
                 return;
             } else {
                 this->sendMessage(this->registeredUsers.at(j).getCommunicationSocket(), outgoingMessage);
+
+                userLock.lock();
+                this->registeredUsers.at(j).addReceiveMessage(outgoingMessage);
+                userLock.unlock();
+
                 this->sendMessage(socket, "Message successfully delivered");
                 return;
             }
@@ -414,12 +417,52 @@ void Server::handleMessaging(int socket) {
     this->sendMessage(socket, "Failed to send message, user does not exist!");
 }
 
+void Server::handleGroupMessaging(int socket) {
+    this->sendMessage(socket, "Ok");
+    std::string sender = "";
+    std::string subscribedLocationReceiver = "";
+    std::string fullText = this->receiveMessage(socket);
+    std::string incomingMessage = "";
+    std::string outgoingMessage = "";
+
+    long unsigned int i =0; 
+    while(fullText[i] != ' ')
+        sender += fullText[i++];
+    i++;
+    while(fullText[i] != ' ')
+        subscribedLocationReceiver += fullText[i++];
+    i++;
+    while(i < fullText.length())
+        incomingMessage += fullText[i++];
+    
+    outgoingMessage = "From: " + sender +" Message: " + incomingMessage;
+
+    //Verify receiver is online
+    for(size_t j =0; j < this->registeredUsers.size(); j++)
+        if(this->registeredUsers.at(j).isSubscribedTo(subscribedLocationReceiver)) {
+            if(this->registeredUsers.at(j).isOnline()) {
+                this->sendMessage(this->registeredUsers.at(j).getCommunicationSocket(), outgoingMessage);
+
+                userLock.lock();
+                this->registeredUsers.at(j).addReceiveMessage(outgoingMessage);
+                userLock.unlock();
+            }
+        }
+    
+    this->sendMessage(socket, "Sent message to all online users, subscribed to: " + subscribedLocationReceiver);
+}
+
 void Server::disconnectCommunicationSocket(int socket) {
     std::string user = this->receiveMessage(socket);
 
     for(size_t i =0; i < this->registeredUsers.size(); i++)
-        if(this->registeredUsers.at(i).getUsername() == user)
+        if(this->registeredUsers.at(i).getUsername() == user){
+            userLock.lock();
+            this->registeredUsers.at(i).setCommunicationSocket(-1);
+            this->registeredUsers.at(i).setConnectionSocket(-1);
+            this->registeredUsers.at(i).updateStatus(false);
             this->sendMessage(this->registeredUsers.at(i).getCommunicationSocket(), "Exit");
+        }
 }
 
 void Server::handleIndividualRequest(int socket)
@@ -448,6 +491,8 @@ void Server::handleIndividualRequest(int socket)
         }
         else if(requestOperation == "message")
             this->handleMessaging(socket);
+        else if(requestOperation == "groupMessage")
+            this->handleGroupMessaging(socket);
         else if(requestOperation == "listen") {
             this->registerCommunicationSocket(socket);
             return;

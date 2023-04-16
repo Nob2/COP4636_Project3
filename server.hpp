@@ -47,11 +47,14 @@ class Server {
         void logoutUser(int connectionSocket);
         void registerUser(int connectionSocket);
         void changeUserPassword(int socket);
+
         void updateSubscription(int socket);
         void removeSubscription(int socket);
         void listUserSubscription(int socket);
         void registerCommunicationSocket(int socket);
+
         void handleMessaging(int socket);
+        void handleGroupMessaging(int socket);
 
         void disconnectCommunicationSocket(int socket);
     public:

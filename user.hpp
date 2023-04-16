@@ -42,10 +42,12 @@ class User {
         void unsubscribeFromLocation(std::string location);
 
         std::vector<std::string> getReceivedMessages() {return this->receivedMessages;}
-        void addReceiveMessage(std::string message) {this->receivedMessages.push_back(message);}
+        void addReceiveMessage(std::string message);
 
         void updateStatus(bool onlineStatus) {this->Online = onlineStatus;}
         bool isOnline() {return this->Online;}
+
+        bool isSubscribedTo(std::string location);
 
 };
 
