@@ -15,14 +15,18 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <thread>
 
 class Client {
     private:
         int clientSocket;
+        int communicationSocket;
+        
         std::string nameOfHost;
         struct sockaddr_in server_address;
         std::string fileContents;
         struct hostent* retrieveHostName(std::string hostName);
+        std::thread listenThread;
 
         void printHeader();
         void sendMessage(std::string message);
@@ -39,6 +43,9 @@ class Client {
         void removeLocation();
         void updatePassword();
         void listSubscriptions();
+        void listenForMessages();
+        void printIncomingMessages();
+        void messageUser();
 
         bool acknowledgeRequest();
         bool acknowledgeResult();

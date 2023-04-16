@@ -375,6 +375,41 @@ void Server::registerCommunicationSocket(int socket) {
     this->sendMessage(socket, "Fail");
 }
 
+void Server::handleMessaging(int socket) {
+    this->sendMessage("Ok");
+    std::string sender = "";
+    std::string receiver = "";
+    std::string fullText = this->receiveMessage(socket);
+    std::string incomingMessage = "";
+    std::string outgoingMessage = "";
+
+    long unsigned int i =0; 
+    while(fullText[i] != ' ')
+        sender += message[i++];
+    i++;
+    while(fullText[i] != ' ')
+        receiver += message[i++];
+    i++;
+    while(i < fullText.length())
+        incomingMessage += message[i++];
+    
+    outgoingMessage = "From: " + sender +" Message: " + incomingMessage;
+
+    //Verify receiver is online
+    for(size_t j =0; j < this->registeredUsers.size(); j++)
+        if(this->registeredUsers.at(j).getUsername() == receiver) {
+            if(!this->registeredUsers.at(j).isOnline()) {
+                this->sendMessage(socket, "User is offline, message will not be sent");
+            } else {
+                this->sendMessage(this->registeredUsers.at(j).getCommunicationSocket(), outgoingMessage);
+                this->sendMessage(socket, "Message successfully delivered");
+                return;
+            }
+        }
+    
+    this->sendMessage(socket, "Failed to send message, user does not exist!");
+}
+
 void Server::handleIndividualRequest(int socket)
 {
     while(true){
@@ -397,6 +432,8 @@ void Server::handleIndividualRequest(int socket)
             this->listUserSubscription(socket);
         else if(requestOperation == "Exit")
             return;
+        else if(requestOperation == "message")
+            this->handleMessaging(socket);
         else if(requestOperation == "listen") {
             this->registerCommunicationSocket(socket);
             return;

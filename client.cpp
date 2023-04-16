@@ -50,8 +50,8 @@ void Client::closeConnection() {
     close(clientSocket);
 }
 
-void Client::sendMessage( std::string message) {
-    send(this->clientSocket, message.c_str(), strlen(message.c_str()), 0);
+void Client::sendMessage(clientSocket, std::string message) {
+    send(clientSocket, message.c_str(), strlen(message.c_str()), 0);
 }
 
 std::string Client::receiveMessage() {
@@ -93,7 +93,7 @@ bool Client::acknowledgeResult() {
 }
 
 void Client::registerUser() {
-    this->sendMessage("register");
+    this->sendMessage(clientSocket, "register");
 
     if(!acknowledgeRequest())
         return;
@@ -107,7 +107,7 @@ void Client::registerUser() {
     std::cin >> pass;
 
     std::string finalMessage = user + " " + pass;
-    this->sendMessage(finalMessage);
+    this->sendMessage(clientSocket, finalMessage);
 
     bool operationSucceeded = this->acknowledgeResult();
 
@@ -116,14 +116,48 @@ void Client::registerUser() {
         this->userName = user;
         this->password = pass;
         this->isLogined = true;
+        this->listenForMessages();
     }
     else {
         std::cout << "Failed to register user. User most likely already exists.\n\n";
     }
 }
 
+void Client::listenForMessages() {
+    if((communicationSocket = socket(AF_INET, SOCK_STREAM,0)) < 0) {
+        printf("Failed to create communication socket\n");
+        exit(1);
+    }
+
+    int connectResult = connect(communicationSocket, (struct sockaddr*) &server_address, sizeof(server_address));
+
+    if(connectResult < 0) {
+        printf("Failed to connect to the server\n");
+        exit(1);
+    }
+
+    this->sendMessage(communicationSocket, "listen");
+
+    if(!acknowledgeRequest())
+        return;
+    if(acknowledgeResult()){
+        this->listenThread = std::thread(&Client::printIncomingMessages, this);
+    }
+}
+
+void Client::printIncomingMessages() {
+    char buffer[4028] = {0};
+    while(read(communicationSocket, buffer, 4028) > 0) {
+        std::string message(buffer);
+        if(message == "Exit")
+            return;
+        else
+            std::cout << "Incoming Message: " << message << std::endl;
+    }
+}
+
 void Client::loginUser() {
-    this->sendMessage("login");
+    this->sendMessage(clientSocket, "login");
 
     if(!acknowledgeRequest())
         return;
@@ -137,7 +171,7 @@ void Client::loginUser() {
     std::cin >> pass;
 
     std::string finalMessage = user + " " + pass;
-    this->sendMessage(finalMessage);
+    this->sendMessage(clientSocket, finalMessage);
 
     bool operationSucceeded = this->acknowledgeResult();
 
@@ -146,6 +180,7 @@ void Client::loginUser() {
         this->userName = user;
         this->password = pass;
         this->isLogined = true;
+        this->listenForMessages();
         
         return;
     } else {
@@ -158,12 +193,12 @@ void Client::loginUser() {
 }
 
 void Client::logout() {
-    this->sendMessage("logout");
+    this->sendMessage(clientSocket, "logout");
 
     if(!acknowledgeRequest())
         return;
 
-    this->sendMessage(this->userName);
+    this->sendMessage(clientSocket, this->userName);
     bool operationSucceeded = this->acknowledgeResult();
 
     if(operationSucceeded) {
@@ -177,7 +212,7 @@ void Client::logout() {
 }
 
 void Client::subscribeLocation() {
-    this->sendMessage("subscribe");
+    this->sendMessage(clientSocket, "subscribe");
     if(!acknowledgeRequest())
         return;
 
@@ -188,7 +223,7 @@ void Client::subscribeLocation() {
 
     finalMessage += " " + location;
 
-    this->sendMessage(finalMessage);
+    this->sendMessage(clientSocket, finalMessage);
 
     bool operationSucceeded = this->acknowledgeResult();
 
@@ -201,7 +236,7 @@ void Client::subscribeLocation() {
 
 void Client::removeLocation() {
     std::cout << "Please note, operation can be successfully even if you are not subscribed to the given location\n\n";
-    this->sendMessage("unsubscribe");
+    this->sendMessage(clientSocket, "unsubscribe");
 
     std::string acknowledgement;
 
@@ -215,7 +250,7 @@ void Client::removeLocation() {
     std::string finalMessage = this->userName;
     finalMessage += " " + location;
 
-    this->sendMessage(finalMessage);
+    this->sendMessage(clientSocket, finalMessage);
 
     bool operationSucceeded = this->acknowledgeResult();
 
@@ -227,7 +262,7 @@ void Client::removeLocation() {
 }
 
 void Client::updatePassword() {
-    this->sendMessage("password");
+    this->sendMessage(clientSocket, "password");
 
     if(!acknowledgeRequest())
         return;
@@ -239,7 +274,7 @@ void Client::updatePassword() {
     std::string finalMessage = this->userName;
     finalMessage += " " + this->password + " " + newPassword;
 
-    this->sendMessage(finalMessage);
+    this->sendMessage(clientSocket, finalMessage);
 
      bool operationSucceeded = this->acknowledgeResult();
 
@@ -252,16 +287,40 @@ void Client::updatePassword() {
 }
 
 void Client::listSubscriptions() {
-    this->sendMessage("list");
+    this->sendMessage(clientSocket, "list");
 
     if(!acknowledgeRequest())
         return;
     
-    this->sendMessage(this->userName);
+    this->sendMessage(clientSocket, this->userName);
 
     std::string serverResponse = this->receiveMessage();
 
     std::cout << "You are subscribed to the following locations: " << serverResponse << std::endl;
+}
+
+void Client::messageUser() {
+    std::string otherUser;
+
+    std::cout << "To whom are you sending a message?\n";
+    std::cin >> otherUser;
+
+    this->sendMessage(clientSocket, "message");
+    if(!acknowledgeRequest())
+        return;
+    
+    std::cout << "What is your message?\n";
+    std::string message;
+    std::cin >> message;
+
+    std::string finalMessage = this->userName;
+    finalMessage += " " + otherUser;
+    finalMessage += message;
+
+    this->sendMessage(clientSocket, finalMessage);
+    std::string serverResponse = this->receiveMessage();
+
+    std::cout << "Server response: " << serverResponse << std::endl;
 }
 
 void Client::messageServer() {
@@ -280,7 +339,7 @@ void Client::messageServer() {
                     this->loginUser();
                     break;
                 case 3: 
-                    this->sendMessage("Exit");
+                    this->sendMessage(clientSocket, "Exit");
                     return;
                 default:
                     std::cout << "Invalid choice, try again\n";
@@ -304,7 +363,10 @@ void Client::messageServer() {
                     this->listSubscriptions();
                     break;
                 case 6:
-                    this->sendMessage("Exit");
+                    this->messageUser();
+                    break;
+                case 7:
+                    this->sendMessage(clientSocket, "Exit");
                     return;
                 default:
                     std::cout << "Invalid choice, try again\n\n";
@@ -329,7 +391,8 @@ void Client::printHeader() {
         std::cout << "3 - Change password\n";
         std::cout << "4 - Unsubscribe from location\n";
         std::cout << "5 - List subscriptions\n";
-        std::cout << "6 - Exit Program\n";
+        std::cout << "6 - Message User\n";
+        std::cout << "7 - Exit Program\n";
         std::cout << std::endl;
     }
 }
