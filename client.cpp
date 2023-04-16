@@ -334,7 +334,7 @@ void Client::messageUser() {
     
     std::cout << "What is your message?\n";
     std::string message;
-    std::cin >> message;
+    std::getline(std::cin, message);
 
     std::string finalMessage = this->userName;
     finalMessage += " " + otherUser;
