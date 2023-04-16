@@ -383,6 +383,8 @@ void Server::handleMessaging(int socket) {
     std::string incomingMessage = "";
     std::string outgoingMessage = "";
 
+    std::cout << "Message: " << fullText << std::endl;
+
     long unsigned int i =0; 
     while(fullText[i] != ' ')
         sender += fullText[i++];
