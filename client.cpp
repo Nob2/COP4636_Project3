@@ -392,6 +392,7 @@ void Client::messageServer() {
                 case 7:
                     this->sendMessage(clientSocket, "Exit");
                     this->sendMessage(clientSocket, this->userName);
+                    this->listenThread.join();
                     return;
                 default:
                     std::cout << "Invalid choice, try again\n\n";
