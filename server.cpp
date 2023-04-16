@@ -435,7 +435,7 @@ void Server::handleGroupMessaging(int socket) {
     while(i < fullText.length())
         incomingMessage += fullText[i++];
     
-    outgoingMessage = "From: " + sender +" Message: " + incomingMessage;
+    outgoingMessage = "From: " + sender +"\n Group Message: " + incomingMessage;
 
     //Verify receiver is online
     for(size_t j =0; j < this->registeredUsers.size(); j++)
@@ -457,11 +457,12 @@ void Server::disconnectCommunicationSocket(int socket) {
 
     for(size_t i =0; i < this->registeredUsers.size(); i++)
         if(this->registeredUsers.at(i).getUsername() == user){
+            this->sendMessage(this->registeredUsers.at(i).getCommunicationSocket(), "Exit");
+            
             userLock.lock();
             this->registeredUsers.at(i).setCommunicationSocket(-1);
             this->registeredUsers.at(i).setConnectionSocket(-1);
             this->registeredUsers.at(i).updateStatus(false);
-            this->sendMessage(this->registeredUsers.at(i).getCommunicationSocket(), "Exit");
         }
 }
 
