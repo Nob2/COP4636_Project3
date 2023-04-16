@@ -29,7 +29,7 @@ class Client {
         std::thread listenThread;
 
         void printHeader();
-        void sendMessage(std::string message);
+        void sendMessage(int socket, std::string message);
         std::string receiveMessage();
 
         std::string userName;
