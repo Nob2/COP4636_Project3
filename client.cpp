@@ -372,6 +372,17 @@ void Client::messageGroup() {
     std::cout << "Server response: " << serverResponse << std::endl;
 }
 
+void Client::checkOnlineUsers() {
+    this->sendMessage(clientSocket, "onlineUsers");
+
+    if(!acknowledgeRequest())
+        return;
+    
+    std::string serverResponse = this->receiveMessage();
+
+    std::cout << "Following users are online: " << serverResponse << std::endl;
+}
+
 void Client::messageServer() {
     while(true) {
         printHeader();
@@ -416,6 +427,9 @@ void Client::messageServer() {
                     break;
                 case 7:
                     this->messageGroup();
+                    break;
+                case 8:
+                    this->checkOnlineUsers();
                     break;
                 case 10:
                     this->sendMessage(clientSocket, "Exit");

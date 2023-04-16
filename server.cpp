@@ -458,12 +458,37 @@ void Server::disconnectCommunicationSocket(int socket) {
     for(size_t i =0; i < this->registeredUsers.size(); i++)
         if(this->registeredUsers.at(i).getUsername() == user){
             this->sendMessage(this->registeredUsers.at(i).getCommunicationSocket(), "Exit");
-            
+
             userLock.lock();
             this->registeredUsers.at(i).setCommunicationSocket(-1);
             this->registeredUsers.at(i).setConnectionSocket(-1);
             this->registeredUsers.at(i).updateStatus(false);
+            userLock.unlock();
         }
+}
+
+void Server::listOnlineUsers(int socket) {
+    this->sendMessage(socket, "Ok");
+
+    std::string finalMessage = "";
+    std::vector<std::string> onlineUsers;
+
+    for(size_t i =0; i < this->registeredUsers.size(); i++) {
+        if(this->registeredUsers.at(i).isOnline())
+            onlineUsers.push_back(this->registeredUsers.at(i).getUsername());
+    }
+    if(onlineUsers.size() == 0)
+        finalMessage = "None";
+    else{
+        for(size_t i =0; i < onlineUsers.size(); i++) {
+            if(i == onlineUsers.size() - 1)
+                finalMessage += onlineUsers.at(i);
+            else
+                finalMessage += onlineUsers.at(i) + ",";
+        }
+    }
+
+    this->sendMessage(socket, finalMessage);
 }
 
 void Server::handleIndividualRequest(int socket)
@@ -498,6 +523,8 @@ void Server::handleIndividualRequest(int socket)
             this->registerCommunicationSocket(socket);
             return;
         }
+        else if(requestOperation == "onlineUsers")
+            this->listOnlineUsers(socket);
         else {
             printf("Invalid request received\n");
             this->sendMessage(socket, "Invalid");

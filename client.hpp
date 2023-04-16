@@ -51,6 +51,8 @@ class Client {
         void messageUser();
         void messageGroup();
 
+        void checkOnlineUsers();
+
         bool acknowledgeRequest();
         bool acknowledgeResult();
     public:

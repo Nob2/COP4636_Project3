@@ -56,6 +56,8 @@ class Server {
         void handleMessaging(int socket);
         void handleGroupMessaging(int socket);
 
+        void listOnlineUsers(int socket);
+
         void disconnectCommunicationSocket(int socket);
     public:
         void initalizeServer();
