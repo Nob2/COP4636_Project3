@@ -44,20 +44,20 @@ class Server {
         void sendMessage(int socket, std::string message);
 
         std::string loginUser(int connectionSocket);
-        void logoutUser(int connectionSocket);
+        void logoutUser(int connectionSocket, std::string userName);
         std::string registerUser(int connectionSocket);
-        void changeUserPassword(int socket);
+        void changeUserPassword(int socket, std::string user);
 
-        void updateSubscription(int socket);
-        void removeSubscription(int socket);
-        void listUserSubscription(int socket);
+        void updateSubscription(int socket, std::string user);
+        void removeSubscription(int socket, std::string user);
+        void listUserSubscription(int socket, std::string user);
         void registerCommunicationSocket(int socket);
 
         void handleMessaging(int socket, std::string sender);
         void handleGroupMessaging(int socket, std::string sender);
 
         void listOnlineUsers(int socket);
-        void listPreviousMessages(int socket);
+        void listPreviousMessages(int socket, std::string user);
 
         void disconnectCommunicationSocket(int socket, std::string user);
     public:

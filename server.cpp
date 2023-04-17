@@ -218,9 +218,8 @@ std::string Server::loginUser(int socket) {
     return "Fail";
 }
 
-void Server::logoutUser(int socket) {
+void Server::logoutUser(int socket, std::string userName) {
     this->sendMessage(socket, "Ok");
-    std::string userName = receiveMessage(socket);
 
     for(size_t i =0; i < this->registeredUsers.size(); i++) {
         if(this->registeredUsers.at(i).getUsername() == userName) {
@@ -238,21 +237,11 @@ void Server::logoutUser(int socket) {
     this->sendMessage(socket, "Fail");
 }
 
-void Server::updateSubscription(int socket) {
+void Server::updateSubscription(int socket, std::string user) {
     this->sendMessage(socket, "Ok");
-    std::string message = this->receiveMessage(socket);
-    std::string user;
-
+    std::string location = this->receiveMessage(socket);
 
     long unsigned int i =0; 
-    while(message[i] != ' ')
-        user += message[i++];
-    i++; //Skip over the space
-
-    std::string location = "";
-    while(i < message.length())
-        location += message[i++];
-    
 
     for(size_t t =0; t < this->registeredUsers.size(); t++)
         if(this->registeredUsers.at(t).getUsername() == user) {
@@ -270,17 +259,12 @@ void Server::updateSubscription(int socket) {
     
 }
 
-void Server::removeSubscription(int socket) {
+void Server::removeSubscription(int socket, std::string user) {
     this->sendMessage(socket, "Ok");
 
     std::string message = this->receiveMessage(socket);
-    std::string user;
-
 
     long unsigned int i =0; 
-    while(message[i] != ' ')
-        user += message[i++];
-    i++; //Skip over the space
 
     std::string location = "";
     while(i < message.length())
@@ -301,18 +285,14 @@ void Server::removeSubscription(int socket) {
     std::cout << "Failed to unsubscribe from location\n";
 }
 
-void Server::changeUserPassword(int socket) {
+void Server::changeUserPassword(int socket, std::string user) {
     this->sendMessage(socket, "Ok");
 
     std::string message = receiveMessage(socket);
-    std::string userName = "";
     std::string oldPassword = "";
     std::string newPassword = "";
     
     long unsigned int i =0; 
-    while(message[i] != ' ')
-        userName += message[i++];
-    i++; //Skip over the space
     while(message[i] != ' ')
         oldPassword += message[i++];
     i++;
@@ -336,15 +316,14 @@ void Server::changeUserPassword(int socket) {
     this->sendMessage(socket, "Fail");
 }
 
-void Server::listUserSubscription(int socket) {
+void Server::listUserSubscription(int socket, std::string user) {
     this->sendMessage(socket, "Ok");
-    std::string userName = this->receiveMessage(socket);
 
     std::string finalMessage = "";
     std::vector<std::string> subscribedLocations;
 
     for(size_t i =0; i < this->registeredUsers.size(); i++) {
-        if(this->registeredUsers.at(i).getUsername() == userName)
+        if(this->registeredUsers.at(i).getUsername() == user)
             subscribedLocations = this->registeredUsers.at(i).getSubscribedLocations();
     }
     if(subscribedLocations.size() == 0)
@@ -482,15 +461,14 @@ void Server::listOnlineUsers(int socket) {
     this->sendMessage(socket, finalMessage);
 }
 
-void Server::listPreviousMessages(int socket) {
+void Server::listPreviousMessages(int socket, std::string user) {
     this->sendMessage(socket, "Ok");
-    std::string userName = this->receiveMessage(socket);
 
     std::string finalMessage = "";
     std::vector<std::string> previousMessages;
 
     for(size_t i =0; i < this->registeredUsers.size(); i++) {
-        if(this->registeredUsers.at(i).getUsername() == userName)
+        if(this->registeredUsers.at(i).getUsername() == user)
             previousMessages = this->registeredUsers.at(i).getReceivedMessages();
     }
     if(previousMessages.size() == 0)
@@ -519,15 +497,15 @@ void Server::handleIndividualRequest(int socket)
         else if(requestOperation == "register")
             user = this->registerUser(socket);
         else if(requestOperation == "logout")
-            this->logoutUser(socket);
+            this->logoutUser(socket, user);
         else if(requestOperation == "password")
-            this->changeUserPassword(socket);
+            this->changeUserPassword(socket, user);
         else if(requestOperation == "subscribe")
-            this->updateSubscription(socket);
+            this->updateSubscription(socket, user);
         else if(requestOperation == "unsubscribe")
-            this->removeSubscription(socket);
+            this->removeSubscription(socket, user);
         else if(requestOperation == "list")
-            this->listUserSubscription(socket);
+            this->listUserSubscription(socket, user);
         else if(requestOperation == "Exit"){
             this->disconnectCommunicationSocket(socket, user);
             return;
@@ -543,7 +521,7 @@ void Server::handleIndividualRequest(int socket)
         else if(requestOperation == "onlineUsers")
             this->listOnlineUsers(socket);
         else if(requestOperation == "listMessages")
-            this->listPreviousMessages(socket);
+            this->listPreviousMessages(socket, user);
         else {
             printf("Invalid request received\n");
             this->sendMessage(socket, "Invalid");

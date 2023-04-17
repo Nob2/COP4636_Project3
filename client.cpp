@@ -221,7 +221,6 @@ void Client::logout() {
     if(!acknowledgeRequest())
         return;
 
-    this->sendMessage(clientSocket, this->userName);
     bool operationSucceeded = this->acknowledgeResult();
 
     if(operationSucceeded) {
@@ -239,12 +238,9 @@ void Client::subscribeLocation() {
     if(!acknowledgeRequest())
         return;
 
-    std::string finalMessage = this->userName;
+    std::string finalMessage;;
     std::cout << "Enter location: ";
-    std::string location;
-    std::cin >> location;
-
-    finalMessage += " " + location;
+    std::cin >> finalMessage;
 
     this->sendMessage(clientSocket, finalMessage);
 
@@ -266,12 +262,9 @@ void Client::removeLocation() {
     if(!acknowledgeRequest())
         return;
     
-    std::string location;
+    std::string finalMessage;
     std::cout << "Enter location: ";
-    std::cin >> location;
-
-    std::string finalMessage = this->userName;
-    finalMessage += " " + location;
+    std::cin >> finalMessage;
 
     this->sendMessage(clientSocket, finalMessage);
 
@@ -294,8 +287,8 @@ void Client::updatePassword() {
     std::cout << "Enter new password: " << newPassword;
     std::cin >> newPassword;
 
-    std::string finalMessage = this->userName;
-    finalMessage += " " + this->password + " " + newPassword;
+    std::string finalMessage = this->password;
+    finalMessage += " " + newPassword;
 
     this->sendMessage(clientSocket, finalMessage);
 
@@ -315,8 +308,6 @@ void Client::listSubscriptions() {
     if(!acknowledgeRequest())
         return;
     
-    this->sendMessage(clientSocket, this->userName);
-
     std::string serverResponse = this->receiveMessage();
 
     std::cout << "You are subscribed to the following locations: " << serverResponse << std::endl;
@@ -384,7 +375,6 @@ void Client::previousMessages() {
     if(!acknowledgeRequest())
         return;
     
-    this->sendMessage(clientSocket, this->userName);
     std::string serverResponse = this->receiveMessage();
 
     std::cout << "Last 10 received messages are: \n" << serverResponse << std::endl;
