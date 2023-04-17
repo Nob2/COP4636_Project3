@@ -241,8 +241,6 @@ void Server::updateSubscription(int socket, std::string user) {
     this->sendMessage(socket, "Ok");
     std::string location = this->receiveMessage(socket);
 
-    long unsigned int i =0; 
-
     for(size_t t =0; t < this->registeredUsers.size(); t++)
         if(this->registeredUsers.at(t).getUsername() == user) {
             userLock.lock();
@@ -300,7 +298,7 @@ void Server::changeUserPassword(int socket, std::string user) {
         newPassword += message[i++];
     
     for(size_t k =0; k < this->registeredUsers.size(); k++) {
-        if(this->registeredUsers.at(k).getUsername() == userName && this->registeredUsers.at(k).getPassword() == oldPassword) {
+        if(this->registeredUsers.at(k).getUsername() == user && this->registeredUsers.at(k).getPassword() == oldPassword) {
             userLock.lock();
 
             this->sendMessage(socket, "Success");
